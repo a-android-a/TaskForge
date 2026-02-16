@@ -1,2 +1,3 @@
 *.log
 /Client/build/
+/build/
