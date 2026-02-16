@@ -24,7 +24,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         UserAuthWindow.h
         UserAuthWindow.cpp
-        ApiClient.h
+
+        network/ApiClient.h
+        network/ApiClient.cpp
 
     )
 # Define target properties for Android with Qt 6 as:
