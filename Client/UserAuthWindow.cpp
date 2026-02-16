@@ -4,7 +4,7 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QSize>
-
+#include <QFile>
 UserAuthWindow::UserAuthWindow(QWidget* parent){
 
     m_pLogin    = new QLineEdit();
@@ -20,8 +20,23 @@ UserAuthWindow::UserAuthWindow(QWidget* parent){
 
     this->setLayout(vBox);
     this->resize(QSize(300,300));
+    connect(m_pEnter,&QPushButton::clicked, this, &UserAuthWindow::slotButton);
+
 }
 
 void UserAuthWindow::slotButton(){
 
 }
+
+bool UserAuthWindow::setStyle(const QString &styleFileName){
+    QFile file(styleFileName);
+    if(file.open(QFile::ReadOnly)){
+        QString strCSS = QLatin1String(file.readAll());
+        this->setStyleSheet(strCSS);
+        file.close();
+        return true;
+    }
+    return false;
+
+}
+

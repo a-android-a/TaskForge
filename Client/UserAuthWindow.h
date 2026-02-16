@@ -13,6 +13,7 @@ private:
     QVBoxLayout* vBox;
 public:
     UserAuthWindow(QWidget *parent = nullptr);
+    bool setStyle(const QString &styleFileName);
 
 private slots:
     void slotButton();
