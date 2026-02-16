@@ -11,6 +11,8 @@ private:
     QLineEdit*   m_pPassword;
     QPushButton* m_pEnter;
     QVBoxLayout* vBox;
+    void sendAuthRequest(const QString &login, const QString &password);
+    QString hashString  (const QString &str); // <- sha256
 public:
     UserAuthWindow(QWidget *parent = nullptr);
     bool setStyle(const QString &styleFileName);

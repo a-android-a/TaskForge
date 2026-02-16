@@ -5,6 +5,9 @@
 #include <QLabel>
 #include <QSize>
 #include <QFile>
+#include <QString>
+#include <QCryptographicHash>
+#include <QByteArray>
 UserAuthWindow::UserAuthWindow(QWidget* parent){
 
     m_pLogin    = new QLineEdit();
@@ -38,5 +41,10 @@ bool UserAuthWindow::setStyle(const QString &styleFileName){
     }
     return false;
 
+}
+QString UserAuthWindow::hashString(const QString &str){
+    QByteArray hash = QCryptographicHash::hash(str.toUtf8(), QCryptographicHash::Sha256);
+    QString hashHex = hash.toHex();
+    return hashHex;
 }
 
