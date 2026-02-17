@@ -15,5 +15,5 @@ public:
     void setHostPort  (const uint16_t  port);
     void sendToServer (const QString &data);
     void connectToServer();
-    void authenticate();
+    void authenticate(const QString &login, const QString password);
 };
