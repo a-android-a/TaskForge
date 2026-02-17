@@ -1,5 +1,6 @@
 #pragma once
-#include<QWidget>
+#include <QWidget>
+#include "network/ApiClient.h"
 class QLineEdit;
 class QPushButton;
 class QVBoxLayout;
@@ -11,6 +12,7 @@ private:
     QLineEdit*   m_pPassword;
     QPushButton* m_pEnter;
     QVBoxLayout* vBox;
+    ApiClient* m_apiClient;
     void sendAuthRequest(const QString &login, const QString &password);
     QString hashString  (const QString &str); // <- sha256
 public:
