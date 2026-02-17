@@ -1,4 +1,5 @@
 #include "UserAuthWindow.h"
+#include "network/ApiClient.h"
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QLineEdit>
@@ -8,12 +9,14 @@
 #include <QString>
 #include <QCryptographicHash>
 #include <QByteArray>
+#include <QMessageBox>
 UserAuthWindow::UserAuthWindow(QWidget* parent){
 
     m_pLogin    = new QLineEdit();
     m_pPassword = new QLineEdit();
     m_pEnter    = new QPushButton(tr("Enter"));
     vBox        = new QVBoxLayout();
+    m_apiClient = new ApiClient(this);
 
     vBox->addWidget(new QLabel(tr("Login")));
     vBox->addWidget(m_pLogin);
@@ -25,10 +28,20 @@ UserAuthWindow::UserAuthWindow(QWidget* parent){
     this->resize(QSize(300,300));
     connect(m_pEnter,&QPushButton::clicked, this, &UserAuthWindow::slotButton);
 
+
 }
 
 void UserAuthWindow::slotButton(){
 
+    QString login = m_pLogin->text().trimmed();
+    QString password = m_pPassword->text();
+
+    if (login.isEmpty() || password.isEmpty()) {
+        QMessageBox::warning(this, tr("Missing information"),tr("Both login and password fields are required"));
+        return;
+    }
+
+    m_apiClient->authenticate(login, password);
 }
 
 bool UserAuthWindow::setStyle(const QString &styleFileName){
