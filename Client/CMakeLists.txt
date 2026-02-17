@@ -27,6 +27,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 
         network/ApiClient.h
         network/ApiClient.cpp
+        Config.h
+        Config.cpp
 
     )
 # Define target properties for Android with Qt 6 as:
