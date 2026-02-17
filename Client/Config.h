@@ -36,6 +36,7 @@ public:
     void setServerHost(const QString& host);
     void setServerPort(quint16 port);
     void setTheme(const QString& theme);
+    void setSettingsFile(const QString& path);
 
 
 signals:
