@@ -63,14 +63,14 @@ bool Config::save() const {
     QJsonObject root;
 
     QJsonObject server;
-    server["host"] = m_serverHost;
-    server["port"] = m_serverPort;
-    root["server"] = server;
+    server["host"]   = m_serverHost;
+    server["port"]   = m_serverPort;
+    root  ["server"] = server;
 
     QJsonObject appearance;
-    appearance["theme"]    = m_theme;
-    appearance["language"] = m_language;
-    root["appearance"]     = appearance;
+    appearance["theme"]     = m_theme;
+    appearance["language"]  = m_language;
+    root      ["appearance"]= appearance;
 
     QJsonObject user;
     user["defaultName"] = m_defaultUserName;
