@@ -1,14 +1,15 @@
 {
   "server": {
-    "host": "192.168.1.100",
+    "host": "localhost",
     "port": 8080
+    
   },
   "appearance": {
     "theme": "dark",
-    "language": "ru"
+    "language": "en"
   },
   "user": {
     "defaultName": "User",
-    //"rememberLogin": true
+    "rememberLogin": true
   }
 }
