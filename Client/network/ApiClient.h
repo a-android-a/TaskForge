@@ -14,4 +14,6 @@ public:
     void setHostName  (const QString &hostName);
     void setHostPort  (const uint16_t  port);
     void sendToServer (const QString &data);
+    void connectToServer();
+    void authenticate();
 };
