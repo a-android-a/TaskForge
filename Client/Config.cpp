@@ -12,7 +12,7 @@ Config& Config::instance() {
 }
 
 Config::Config() {
-    m_filePath = QCoreApplication::applicationDirPath() + "/config.json";
+    m_filePath = QCoreApplication::applicationDirPath() + "config.json";
 }
 
 bool Config::load() {
@@ -63,8 +63,9 @@ bool Config::save() const {
     QJsonObject root;
 
     QJsonObject server;
-    server["host"]   = m_serverHost;
-    server["port"]   = m_serverPort;
+    server["host"]        = m_serverHost;
+    server["port"]        = m_serverPort;
+    server["certificate"] = m_pCertificate;
     root  ["server"] = server;
 
     QJsonObject appearance;
