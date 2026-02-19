@@ -2,13 +2,14 @@
 
 #include <QSslSocket>
 #include <QString>
-
+#include"../Config.h"
 
 class ApiClient:public QSslSocket{
     Q_OBJECT;
 private:
     QString m_hostName;
     int m_nPort;
+
 public:
     ApiClient(QObject* parent);
     void setHostName  (const QString &hostName);
@@ -16,4 +17,6 @@ public:
     void sendToServer (const QString &data);
     void connectToServer();
     void authenticate(const QString &login, const QString password);
+private slots:
+    void slotReadyRead();
 };
