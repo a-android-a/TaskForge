@@ -1,3 +1,5 @@
 *.log
 /Client/build/
 /build/
+server.crt
+Server/build
