@@ -40,7 +40,7 @@ void UserAuthWindow::slotButton(){
         QMessageBox::warning(this, tr("Missing information"),tr("Both login and password fields are required"));
         return;
     }
-
+    m_apiClient->connectToServer();
     m_apiClient->authenticate(login, password);
 }
 
