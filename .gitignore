@@ -3,3 +3,4 @@
 /build/
 server.crt
 Server/build
+Client/CMakeLists.txt.user
