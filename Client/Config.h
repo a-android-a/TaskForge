@@ -17,6 +17,7 @@ private:
     QString m_theme           = "dark";
     QString m_language        = "en";
     QString m_defaultUserName = "User";
+    QString m_pCertificate    = "server.crt";
 
     QString m_filePath;
 
@@ -31,7 +32,7 @@ public:
     QString getTheme() const           { return m_theme; }
     QString getLanguage() const        { return m_language; }
     QString getDefaultUserName() const { return m_defaultUserName; }
-
+    QString getCertificate()     const {return m_pCertificate;}
     //set
     void setServerHost(const QString& host);
     void setServerPort(quint16 port);
