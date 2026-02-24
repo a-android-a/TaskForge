@@ -4,3 +4,7 @@
 server.crt
 Server/build
 Client/CMakeLists.txt.user
+*.db-journal
+*-journal
+*.sqlite
+*.sqlite-journal
