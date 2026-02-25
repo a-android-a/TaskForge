@@ -23,5 +23,5 @@ private slots:
     void onSslErrors(const QList<QSslError> &errors);
 
 private:
-    QList<QSslSocket*> m_clients;  // Все подключённые клиенты
+    QList<QSslSocket*> m_clients;
 };
