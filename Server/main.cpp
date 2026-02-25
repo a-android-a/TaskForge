@@ -2,6 +2,7 @@
 #include "SslServer.h"
 int main(int argc, char *argv[])
 {
+    QApplication a(argc, argv);
     SslServer server;
     const int port = 4433;
 
@@ -9,6 +10,6 @@ int main(int argc, char *argv[])
         qInfo() << "Error Start Server " << server.errorString();
         return 1;
     }
-
-    return 0;
+    qInfo() << "Server Start" ;
+   return a.exec();
 }
