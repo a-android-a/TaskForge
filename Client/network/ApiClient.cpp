@@ -16,7 +16,19 @@ ApiClient::ApiClient(QObject* parent): QSslSocket(parent)
 
 }
 void ApiClient::authenticate(const QString &login, const QString password){
+    QJsonObject messageObj;
 
+    messageObj["type"    ] = "authorization";
+    messageObj["time"    ] =  QTime::currentTime().toString("hh:mm:ss");;
+    messageObj["login"   ] = login;
+    messageObj["password"] = password;
+
+    QJsonDocument doc(messageObj);
+
+
+    QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+    jsonData += '\n';
+    this->write(jsonData);
 }
 void ApiClient::connectToServer()
 {
@@ -53,7 +65,26 @@ void ApiClient::connectToServer()
     });
 
 
-    this->connectToHostEncrypted(Config::instance().getServerHost(), Config::instance().getServerPort());
+    this->connectToHostEncrypted(Config::instance().getServerHost(), 4433);
+
+}
+void ApiClient::sendToServer(const QString &data)
+{
+
+    QJsonObject messageObj;
+
+    messageObj["type"] = "text";
+    messageObj["time"] =  QTime::currentTime().toString("hh:mm:ss");;
+
+
+    QJsonDocument doc(messageObj);
+
+
+    QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+    jsonData += '\n';
+
+    this->write(jsonData);
+
 
 }
 void ApiClient::slotReadyRead(){
