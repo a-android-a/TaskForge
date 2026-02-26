@@ -1,4 +1,5 @@
 #include "SslServer.h"
+#include "UsersDatabaseManager.h"
 #include <QFile>
 #include <QSslKey>
 #include <QSslCertificate>
@@ -9,10 +10,13 @@
 #include <QJsonParseError>
 #include <QSqlQuery>
 
-SslServer::SslServer(QObject *parent)
-    : QTcpServer(parent)
+SslServer::SslServer(QObject *parent):QTcpServer(parent)
 {
-
+    UsersDatabaseManager usersDB("DB/Users.db");
+    usersDB.open();
+    if(!usersDB.isOpen()){
+       qWarning() << "Failed to open Users database" << usersDB.lastErrorText();
+    }
 }
 
 SslServer::~SslServer()
@@ -122,6 +126,7 @@ void SslServer::onReadyRead()
 
         if (type == "authorization") {
             qInfo()<<"authorization";
+
         } else if (type == "command") {
 
         }
