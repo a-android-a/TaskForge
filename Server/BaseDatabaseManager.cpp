@@ -1,6 +1,7 @@
 #include "BaseDatabaseManager.h"
 #include <QDebug>
 #include <QUuid>
+#include <QVector>
 
 BaseDatabaseManager::BaseDatabaseManager(const QString &dbPath,
                                          const QString &connectionName)
@@ -101,37 +102,36 @@ bool BaseDatabaseManager::execInsertGetId(const QString &sql,
     return false;
 }
 
-std::optional<QVariant> BaseDatabaseManager::scalar(const QString &sql,
+QVariant BaseDatabaseManager::scalar(const QString &sql,
                                                     const QVariantMap &params)
 {
     QSqlQuery query = select(sql, params);
     if (query.next()) {
         return query.value(0);
     }
-    return std::nullopt;
+    //return std::nullopt;
 }
 
-std::optional<QVariantMap> BaseDatabaseManager::getFirstRow(const QString &sql,
-                                                            const QVariantMap &params)
+QVariantMap BaseDatabaseManager::getFirstRow(const QString &sql, const QVariantMap &params)
 {
     QSqlQuery query = select(sql, params);
-    if (!query.next()) {
-        return std::nullopt;
-    }
 
     QVariantMap row;
-    QSqlRecord rec = query.record();
-    for (int i = 0; i < rec.count(); ++i) {
-        row[rec.fieldName(i)] = query.value(i);
+    if (query.next()) {
+        QSqlRecord rec = query.record();
+        for (int i = 0; i < rec.count(); ++i) {
+            row[rec.fieldName(i)] = query.value(i);
+        }
     }
+
 
     return row;
 }
 
-std::vector<QVariantMap> BaseDatabaseManager::getRows(const QString &sql,
+QVector<QVariantMap> BaseDatabaseManager::getRows(const QString &sql,
                                                       const QVariantMap &params)
 {
-    std::vector<QVariantMap> result;
+    QVector<QVariantMap> result;
     QSqlQuery query = select(sql, params);
 
     while (query.next()) {
