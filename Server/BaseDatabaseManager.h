@@ -34,15 +34,15 @@ public:
                          qint64 &outLastInsertId);
 
 
-    std::optional<QVariant> scalar(const QString &sql,
+    QVariant scalar(const QString &sql,
                                    const QVariantMap &params = QVariantMap());
 
 
-    std::optional<QVariantMap> getFirstRow(const QString &sql,
+    QVariantMap getFirstRow(const QString &sql,
                                            const QVariantMap &params = QVariantMap());
 
 
-    std::vector<QVariantMap> getRows(const QString &sql,
+   QVector<QVariantMap> getRows(const QString &sql,
                                      const QVariantMap &params = QVariantMap());
 
 
