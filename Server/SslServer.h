@@ -4,7 +4,9 @@
 #include <QSslSocket>
 #include <QList>
 #include <QDebug>
-
+#include <QString>
+#include <QByteArray>
+#include "UsersDatabaseManager.h"
 class SslServer : public QTcpServer
 {
     Q_OBJECT
@@ -24,4 +26,9 @@ private slots:
 
 private:
     QList<QSslSocket*> m_clients;
+    User       authenticate      (const QString &passwd,   const QString &login ,int &statusCode );
+    QString    hashPasswordPBKDF2(const QString &password, const QByteArray &salt);
+    QByteArray generateSalt      (int bytes = 16);
+    QString toSha256(const QString &str);
+    UsersDatabaseManager usersDB;
 };

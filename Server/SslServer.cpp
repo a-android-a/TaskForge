@@ -9,14 +9,21 @@
 #include <QJsonArray>
 #include <QJsonParseError>
 #include <QSqlQuery>
-
+#include <QCryptographicHash>
+#include <QRandomGenerator>
+#include <QByteArray>
+#include <QList>
 SslServer::SslServer(QObject *parent):QTcpServer(parent)
 {
-    UsersDatabaseManager usersDB("DB/Users.db");
+
+    usersDB = UsersDatabaseManager("DB/Users.db");
+
     usersDB.open();
     if(!usersDB.isOpen()){
-       qWarning() << "Failed to open Users database" << usersDB.lastErrorText();
+        qWarning() << "Failed to open Users database" << usersDB.lastErrorText();
     }
+
+
 }
 
 SslServer::~SslServer()
@@ -125,7 +132,25 @@ void SslServer::onReadyRead()
 
 
         if (type == "authorization") {
+            int statusCode = -1;
+            QString login    = jsonObj.value("login").toString();
+            QString password = jsonObj.value("password").toString();
             qInfo()<<"authorization";
+            QJsonObject response;
+            response["type"] = "authorization_response";
+            User u = authenticate(password,login,statusCode);
+            if(statusCode == 1){
+                qInfo()<<"status:ok";
+                response["status"]     = "ok";
+                response["userId"]     = u.id;
+                response["fullName"]   = u.name;
+                response["timestamp"]  = QDateTime::currentDateTimeUtc().toString(Qt::ISODate);
+            }else  {
+                qInfo()<<"status:error";
+                response["status"]  = "error";
+                response["message"] = "Authentication failed";
+            }
+            socket->write(data + "\n");
 
         } else if (type == "command") {
 
@@ -133,6 +158,64 @@ void SslServer::onReadyRead()
 
 
     }
+}
+
+QByteArray generateSalt(int bytes = 16)
+{
+    QByteArray salt(bytes, Qt::Uninitialized);
+
+    auto *rng = QRandomGenerator::global();
+
+    for (int i = 0; i < bytes; ++i) {
+        salt[i] = static_cast<char>(rng->bounded(256));
+    }
+
+    return salt;
+}
+
+
+QString SslServer::hashPasswordPBKDF2(const QString &password, const QByteArray &salt)
+{
+    QCryptographicHash hash(QCryptographicHash::Sha256);
+    QByteArray data = password.toUtf8() + salt;
+
+    for (int i = 0; i < 600000; ++i) {
+        hash.reset();
+        hash.addData(data);
+        data = hash.result();
+    }
+
+    return QString::fromLatin1(data.toHex());
+}
+QString SslServer::toSha256(const QString &str){
+    QString resultStr;
+    QByteArray data = str.toUtf8();
+
+    QCryptographicHash hash(QCryptographicHash::Sha256);
+    hash.addData(data);
+    QByteArray result = hash.result();
+    resultStr  =  QString::fromLatin1(result.toHex());
+    return resultStr;
+}
+
+
+User SslServer::authenticate(const QString &passwd, const QString &login, int &statusCode){
+
+    QString loginHash    = toSha256(login);
+    User u               = usersDB.getUserByLoginHash(loginHash);
+    QString passwrodHash = toSha256(passwd);
+
+    QByteArray Salt = QByteArray::fromBase64(u.password_salt.toUtf8());
+
+    QString passwrodHashSalt     = hashPasswordPBKDF2(passwrodHash,Salt);
+    QString passwrodHashSaltUser = hashPasswordPBKDF2(u.passwordHash,Salt);
+
+    qInfo()<<passwrodHashSaltUser;
+    qInfo()<<passwrodHashSalt;
+
+    if(passwrodHashSaltUser == passwrodHashSalt) statusCode = 1;
+
+    return u;
 }
 
 void SslServer::onDisconnected()
