@@ -8,17 +8,17 @@ class UsersDatabaseManager : public BaseDatabaseManager
 public:
     explicit UsersDatabaseManager(const QString& path = "DB/Users.db"): BaseDatabaseManager(path, "users_conn") {}
 
-    std::optional<User> getUserById(int id);
+    User getUserById(int id);
 
-    std::optional<User> getUserByLoginHash(const QString& loginHash);
+    User getUserByLoginHash(const QString& loginHash);
 
     bool createUser(
         const QString& name,
         const QString& surname,
         const QString& jobTitle,
         const QString& loginHash,
-        const QString& passwordHash
-        );
+        const QString& PasswordHash,
+        const QString& saltBase64);
 
     bool updateUserBasicInfo(int id,
                              const QString& name,
