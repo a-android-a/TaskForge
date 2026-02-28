@@ -32,7 +32,7 @@ void ApiClient::authenticate(const QString &login, const QString password){
 }
 void ApiClient::connectToServer()
 {
-    Config::instance().setSettingsFile("/config.json");
+    Config::instance().setSettingsFile("config.json");
 
     qInfo()<< Config::instance().getServerHost();
     qInfo()<< Config::instance().getServerPort();
