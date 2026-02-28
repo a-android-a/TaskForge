@@ -8,3 +8,5 @@ Client/CMakeLists.txt.user
 *-journal
 *.sqlite
 *.sqlite-journal
+User.sqbpro
+
