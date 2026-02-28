@@ -13,6 +13,7 @@ struct User
     QString     jobTitle;
     QString     loginHash;
     QString     passwordHash;
+    QString     password_salt;
     bool        isBanned        = false;
 
     bool isValid() const { return id > 0; }
