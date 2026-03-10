@@ -17,6 +17,10 @@ public:
     void sendToServer (const QString &data);
     void connectToServer();
     void authenticate(const QString &login, const QString password);
+signals:
+    void authorizationFailed();
+    void authorizationOk();
 private slots:
     void slotReadyRead();
+
 };

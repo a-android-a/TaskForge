@@ -10,9 +10,12 @@
 #include <QJsonParseError>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QMessageBox>
 
 ApiClient::ApiClient(QObject* parent): QSslSocket(parent)
 {
+    connect(this, &QSslSocket::readyRead, this, &ApiClient::slotReadyRead);
+    connect(this, &QSslSocket::errorOccurred,this, [](QAbstractSocket::SocketError err){ qWarning() << "Error:" << err; });
 
 }
 void ApiClient::authenticate(const QString &login, const QString password){
@@ -88,28 +91,39 @@ void ApiClient::sendToServer(const QString &data)
 
 }
 void ApiClient::slotReadyRead(){
-    while (this->canReadLine()) {
-        QByteArray rawLine = this->readLine();
 
+        QByteArray rawLine = this->readAll();
+        QString message = QString::fromUtf8(rawLine).trimmed();
         QJsonParseError parseError;
-        QJsonDocument doc = QJsonDocument::fromJson(rawLine, &parseError);
+        QJsonDocument doc = QJsonDocument::fromJson(message .toUtf8(), &parseError);
 
         if (parseError.error != QJsonParseError::NoError) {
             qDebug() << "JSON error:" << parseError.errorString();
-            continue;
+           // continue;
         }
 
 
         if (!doc.isObject()) {
 
-            continue;
+          //  continue;
         }
 
         QJsonObject obj = doc.object();
 
         QString type = obj["type"].toString();
 
+        qInfo()<<type;
+        if(type == "authorization_response"){
+            QString status = obj["status"].toString();
+            if(status == "ok"){
+                emit authorizationOk();
+            }else  {
 
-    }
+                qInfo()<<"status:error";
+                emit authorizationFailed();
+            }
+        }
+
+
 
 }
