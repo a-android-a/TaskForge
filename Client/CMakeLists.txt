@@ -28,6 +28,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         network/ApiClient.cpp
         Config.h
         Config.cpp
+        MainWindowWorker.h
+        MainWindowWorker.cpp
 
 
     )
