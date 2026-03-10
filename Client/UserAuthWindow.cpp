@@ -26,8 +26,10 @@ UserAuthWindow::UserAuthWindow(QWidget* parent){
 
     this->setLayout(vBox);
     this->resize(QSize(300,300));
-    connect(m_pEnter,&QPushButton::clicked, this, &UserAuthWindow::slotButton);
-
+    connect(m_pEnter,    &QPushButton::clicked,          this,&UserAuthWindow::slotButton             );
+    connect(m_apiClient, &ApiClient::authorizationFailed,this,&UserAuthWindow::slotAuthorizationFailed);
+    connect(m_apiClient, &ApiClient::authorizationOk,    this,&UserAuthWindow::slotAuthorizationOk    );
+    m_apiClient->connectToServer();
 
 }
 
@@ -40,8 +42,12 @@ void UserAuthWindow::slotButton(){
         QMessageBox::warning(this, tr("Missing information"),tr("Both login and password fields are required"));
         return;
     }
-    m_apiClient->connectToServer();
+
     m_apiClient->authenticate(login, password);
+}
+
+void UserAuthWindow::slotAuthorizationFailed(){
+    QMessageBox::warning(this, tr("Missing information"),tr("login or password incorrect"));
 }
 
 bool UserAuthWindow::setStyle(const QString &styleFileName){
@@ -59,5 +65,8 @@ QString UserAuthWindow::hashString(const QString &str){
     QByteArray hash = QCryptographicHash::hash(str.toUtf8(), QCryptographicHash::Sha256);
     QString hashHex = hash.toHex();
     return hashHex;
+}
+void UserAuthWindow::slotAuthorizationOk(){
+
 }
 

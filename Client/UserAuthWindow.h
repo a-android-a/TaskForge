@@ -21,5 +21,7 @@ public:
 
 private slots:
     void slotButton();
+    void slotAuthorizationFailed();
+    void slotAuthorizationOk();
 
 };
