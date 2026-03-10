@@ -1,37 +1,37 @@
 #include"UsersDatabaseManager.h"
 #include"User.h"
-User UsersDatabaseManager::getUserByLoginHash(const QString& loginHash)
-{
-    QVariantMap params;
-    params[":loginHash"] = loginHash;
+    User UsersDatabaseManager::getUserByLoginHash(const QString& loginHash)
+    {
+        QVariantMap params;
+        params[":loginHash"] = loginHash;
 
 
-    QVariantMap row = getFirstRow(
-        "SELECT id, created_at, name, surname, job_title, "
-        "       login_hash, password_hash, is_banned, password_salt "
-        "FROM Users "
-        "WHERE login_hash = :loginHash",
-        params
-        );
+        QVariantMap row = getFirstRow(
+            "SELECT id, created_at, name, surname, job_title, "
+            "       login_hash, password_hash, is_banned, password_salt "
+            "FROM Users "
+            "WHERE login_hash = :loginHash",
+            params
+            );
 
-    if (row.isEmpty()) {
-        return User();
-        qInfo()<<"User, not found";
+        if (row.isEmpty()) {
+            return User();
+            qInfo()<<"User, not found";
+        }
+
+        User u;
+        u.id            = row.value("id").toInt();
+        u.createdAt     = QDateTime::fromString(row.value("created_at").toString(), Qt::ISODate);
+        u.name          = row.value("name").toString();
+        u.surname       = row.value("surname").toString();
+        u.jobTitle      = row.value("job_title").toString();
+        u.loginHash     = row.value("login_hash").toString();
+        u.passwordHash  = row.value("password_hash").toString();
+        u.password_salt = row.value("password_salt").toString();
+        u.isBanned      = row.value("is_banned").toInt();
+
+        return u;
     }
-
-    User u;
-    u.id            = row.value("id").toInt();
-    u.createdAt     = QDateTime::fromString(row.value("created_at").toString(), Qt::ISODate);
-    u.name          = row.value("name").toString();
-    u.surname       = row.value("surname").toString();
-    u.jobTitle      = row.value("job_title").toString();
-    u.loginHash     = row.value("login_hash").toString();
-    u.passwordHash  = row.value("password_hash").toString();
-    u.password_salt = row.value("password_salt").toString();
-    u.isBanned      = row.value("is_banned").toInt() != 0;
-
-    return u;
-}
 
 bool UsersDatabaseManager::createUser(
     const QString& name,
