@@ -13,6 +13,7 @@
 #include <QRandomGenerator>
 #include <QByteArray>
 #include <QList>
+
 SslServer::SslServer(QObject *parent):QTcpServer(parent)
 {
 
@@ -20,7 +21,7 @@ SslServer::SslServer(QObject *parent):QTcpServer(parent)
 
     usersDB.open();
     if(!usersDB.isOpen()){
-        qWarning() << "Failed to open Users database" << usersDB.lastErrorText();
+        qWarning() << "Failed to open Users database " << usersDB.lastErrorText();
     }
 
 
@@ -129,7 +130,7 @@ void SslServer::onReadyRead()
 
         QString type = jsonObj.value("type").toString();
 
-
+        QByteArray result;
 
         if (type == "authorization") {
             int statusCode = -1;
@@ -139,19 +140,26 @@ void SslServer::onReadyRead()
             QJsonObject response;
             response["type"] = "authorization_response";
             User u = authenticate(password,login,statusCode);
-            if(statusCode == 1){
+            if(statusCode == 1 && u.isBanned == 0){
+
                 qInfo()<<"status:ok";
                 response["status"]     = "ok";
                 response["userId"]     = u.id;
-                response["fullName"]   = u.name;
+                response["name"]       = u.name;
+                response["surname"]    = u.surname;
+                response["job_title"]  = u.jobTitle;
                 response["timestamp"]  = QDateTime::currentDateTimeUtc().toString(Qt::ISODate);
             }else  {
                 qInfo()<<"status:error";
                 response["status"]  = "error";
                 response["message"] = "Authentication failed";
             }
-            socket->write(data + "\n");
+            QJsonDocument doc(response);
+            QByteArray result = doc.toJson(QJsonDocument::Compact);
+            result.append('\n');
 
+            socket->write(result);
+            qInfo()<<result;
         } else if (type == "command") {
 
         }
