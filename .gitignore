@@ -9,4 +9,4 @@ Client/CMakeLists.txt.user
 *.sqlite
 *.sqlite-journal
 User.sqbpro
-
+log.txt
