@@ -30,6 +30,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         Config.cpp
         MainWindowWorker.h
         MainWindowWorker.cpp
+        TaskColumn.h
+        TaskColumn.cpp
+        TaskCard.h
+        TaskCard.cpp
 
 
     )
