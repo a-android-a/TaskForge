@@ -3,12 +3,13 @@
 #include <QSslSocket>
 #include <QString>
 #include"../Config.h"
-
+#include "../../Server/User.h"
 class ApiClient:public QSslSocket{
     Q_OBJECT;
 private:
     QString m_hostName;
     int m_nPort;
+    User user;
 
 public:
     ApiClient(QObject* parent);

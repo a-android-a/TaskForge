@@ -1,5 +1,7 @@
 #include "ApiClient.h"
 #include "../Config.h"
+#include "../../Server/User.h"
+#include "../MainWindowWorker.h"
 
 #include <QSslConfiguration>
 #include <QList>
@@ -16,6 +18,8 @@ ApiClient::ApiClient(QObject* parent): QSslSocket(parent)
 {
     connect(this, &QSslSocket::readyRead, this, &ApiClient::slotReadyRead);
     connect(this, &QSslSocket::errorOccurred,this, [](QAbstractSocket::SocketError err){ qWarning() << "Error:" << err; });
+
+    User user;
 
 }
 void ApiClient::authenticate(const QString &login, const QString password){
@@ -116,6 +120,19 @@ void ApiClient::slotReadyRead(){
         if(type == "authorization_response"){
             QString status = obj["status"].toString();
             if(status == "ok"){
+                qInfo()<<"ok";
+                user.id        = obj["id"].toInt();
+                //user.createdAt = obj["created_at"].toString();
+                user.name      = obj["name"].toString();
+                user.surname   = obj["surname"].toString();
+                user.jobTitle  = obj["job_title"].toString();
+                qInfo()<< user.jobTitle;
+                if(user.jobTitle == "worker"){
+
+                    MainWindowWorker* workerWindow = new MainWindowWorker(nullptr);
+                    workerWindow->show();
+                }
+
                 emit authorizationOk();
             }else  {
 
