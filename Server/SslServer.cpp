@@ -1,5 +1,8 @@
 #include "SslServer.h"
 #include "UsersDatabaseManager.h"
+#include "TaskDatabaseManager.h"
+#include "Task.h"
+#include <QVector>
 #include <QFile>
 #include <QSslKey>
 #include <QSslCertificate>
@@ -18,11 +21,16 @@ SslServer::SslServer(QObject *parent):QTcpServer(parent)
 {
 
     usersDB = UsersDatabaseManager("DB/Users.db");
-
+    tasksDB = TaskDatabaseManager("DB/tasks.db");
     usersDB.open();
+    tasksDB.open();
     if(!usersDB.isOpen()){
         qWarning() << "Failed to open Users database " << usersDB.lastErrorText();
     }
+    if(!tasksDB.isOpen()){
+        qWarning() << "Failed to open Tasks database " << tasksDB.lastErrorText();
+    }
+
 
 
 }
@@ -133,13 +141,17 @@ void SslServer::onReadyRead()
         QByteArray result;
 
         if (type == "authorization") {
+
             int statusCode = -1;
+
             QString login    = jsonObj.value("login").toString();
             QString password = jsonObj.value("password").toString();
+
             qInfo()<<"authorization";
             QJsonObject response;
             response["type"] = "authorization_response";
             User u = authenticate(password,login,statusCode);
+
             if(statusCode == 1 && u.isBanned == 0){
 
                 qInfo()<<"status:ok";
@@ -160,10 +172,41 @@ void SslServer::onReadyRead()
 
             socket->write(result);
             qInfo()<<result;
-        } else if (type == "command") {
+        } else if (type == "getAllTasks") {
+            QVector<Task> tasks = tasksDB.getAllTasks();
+
+            QJsonArray tasksArray;
+            for (const Task &t : tasks) {
+                QJsonObject taskObj;
+                taskObj["id"]          = t.id;
+                taskObj["status"]      = t.status;
+                taskObj["priority"]    = t.priority;
+                taskObj["taskName"]    = t.taskName;
+                taskObj["description"] = t.description;
+                taskObj["due_date"]    = t.due_date;
+                taskObj["created_by"]  = t.created_by;
+                taskObj["assigned_to"] = t.assigned_to;
+
+                tasksArray.append(taskObj);
+            }
+
+            QJsonObject response;
+            response["type"]   = "allTasks_response";
+            response["status"] = "ok";
+            response["tasks"]  = tasksArray;
+
+            QJsonDocument doc(response);
+            QByteArray result = doc.toJson(QJsonDocument::Compact);
+            result.append('\n');
+
+            socket->write(result);
+            socket->flush();
+
+            qInfo() << "Tasks sent:" << tasks.size();
+        }
+        else if(type == "updateTasks"){
 
         }
-
 
     }
 }
