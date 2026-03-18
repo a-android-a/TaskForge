@@ -3,9 +3,10 @@
 #include <QMimeData>
 #include <QDebug>
 #include <QScrollArea>
+#include <QLayoutItem>
 TaskColumn::TaskColumn(const QString &title, QWidget *parent)
     : QWidget(parent)
-    , m_status(title.toLower().replace(" ", "_")) // todo, in_progress, done
+     // todo, in_progress, done
 {
     setAcceptDrops(true);
     setMinimumWidth(280);
@@ -13,6 +14,10 @@ TaskColumn::TaskColumn(const QString &title, QWidget *parent)
     // Main column style (background, border)
     setStyleSheet("background: #f5f5f5; border: 1px solid #d0d0d0; border-radius: 8px;");
 
+    if (title == "Not started")      m_status = 0;
+    else if (title == "At work")     m_status = 1;
+    else if (title == "Completed")   m_status = 2;
+    else                             m_status = -1;
     // Main vertical layout
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(8, 8, 8, 8);
@@ -78,15 +83,29 @@ void TaskColumn::dragLeaveEvent(QDragLeaveEvent *event)
 
 void TaskColumn::dropEvent(QDropEvent *event)
 {
-    if (event->mimeData()->hasFormat("application/x-task-id")) {
-        int taskId = event->mimeData()->data("application/x-task-id").toInt();
+    if (!event->mimeData()->hasFormat("application/x-task-id"))
+        return;
 
-        // Эмитируем сигнал, что карточка упала в эту колонку
-        emit taskDropped(taskId, m_status);
+    TaskCard* card = reinterpret_cast<TaskCard*>(
+        event->mimeData()->property("cardPtr").value<void*>()
+        );
 
-        // Подсветка убирается
-        setStyleSheet("background: #f5f5f5; border: 1px solid #d0d0d0; border-radius: 8px;");
+    if (!card)
+        return;
 
-        event->acceptProposedAction();
-    }
+    emit taskDropped(card, this);
+
+    setStyleSheet("background: #f5f5f5; border: 1px solid #d0d0d0; border-radius: 8px;");
+    event->acceptProposedAction();
 }
+
+void TaskColumn::clearCards(){
+    // while (QLayoutItem* item = m_layout->takeAt(0)) {
+    //     if (QWidget* w = item->widget())
+    //         w->deleteLater();
+    //     delete item;
+    // }
+}
+int TaskColumn::status()  { return m_status; }
+
+
