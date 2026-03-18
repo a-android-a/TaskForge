@@ -1,1 +1,116 @@
-#include"TaskDatabaseManager.h"
+#include "TaskDatabaseManager.h"
+#include "Task.h"
+#include <QDebug>
+
+Task TaskDatabaseManager::getTaskById(qint64 id)
+{
+    auto row = getFirstRow(
+        "SELECT id, status, priority, taskName, description, due_date, created_by, assigned_to "
+        "FROM \"Task\" WHERE id = :id",
+        {{":id", id}}
+        );
+
+    if (row.isEmpty()) {
+        qWarning() << "Task with id" << id << "not found";
+        return Task{};
+    }
+
+    Task t;
+    t.id          = row.value("id").toLongLong();
+    t.status      = row.value("status").toLongLong();
+    t.priority    = row.value("priority").toLongLong();
+    t.taskName    = row.value("taskName").toString();
+    t.description = row.value("description").toString();
+    t.due_date    = row.value("due_date").toString();
+    t.created_by  = row.value("created_by").toString();
+    t.assigned_to = row.value("assigned_to").toString();
+
+    return t;
+}
+
+QVector<Task> TaskDatabaseManager::getAllTasks()
+{
+    QVector<Task> tasks;
+
+    auto rows = getRows(
+        "SELECT id, status, priority, taskName, description, due_date, created_by, assigned_to "
+        "FROM \"Task\" ORDER BY priority ASC, id DESC"
+        );
+
+    for (const auto& row : rows) {
+        Task t;
+        t.id          = row.value("id").toLongLong();
+        t.status      = row.value("status").toLongLong();
+        t.priority    = row.value("priority").toLongLong();
+        t.taskName    = row.value("taskName").toString();
+        t.description = row.value("description").toString();
+        t.due_date    = row.value("due_date").toString();
+        t.created_by  = row.value("created_by").toString();
+        t.assigned_to = row.value("assigned_to").toString();
+
+        tasks.append(t);
+    }
+
+    return tasks;
+}
+
+bool TaskDatabaseManager::createTask(const Task& task)
+{
+    qint64 newId = -1;
+
+    bool ok = execInsertGetId(
+        "INSERT INTO \"Task\" (status, priority, taskName, description, due_date, created_by, assigned_to) "
+        "VALUES (:status, :priority, :taskName, :description, :due_date, :created_by, :assigned_to)",
+        {
+            {":status",      task.status},
+            {":priority",    task.priority},
+            {":taskName",    task.taskName},
+            {":description", task.description},
+            {":due_date",    task.due_date},
+            {":created_by",  task.created_by},
+            {":assigned_to", task.assigned_to}
+        },
+        newId
+        );
+
+    if (ok) {
+        qInfo() << "Task created with ID:" << newId;
+    } else {
+        qWarning() << "Failed to create task";
+    }
+
+    return ok && newId > 0;
+}
+
+bool TaskDatabaseManager::updateTask(qint64 id, const Task& task)
+{
+    bool ok = exec(
+        "UPDATE \"Task\" SET "
+        "status = :status, "
+        "priority = :priority, "
+        "taskName = :taskName, "
+        "description = :description, "
+        "due_date = :due_date, "
+        "created_by = :created_by, "
+        "assigned_to = :assigned_to "
+        "WHERE id = :id",
+        {
+            {":id",          id},
+            {":status",      task.status},
+            {":priority",    task.priority},
+            {":taskName",    task.taskName},
+            {":description", task.description},
+            {":due_date",    task.due_date},
+            {":created_by",  task.created_by},
+            {":assigned_to", task.assigned_to}
+        }
+        );
+
+    if (ok) {
+        qInfo() << "Task" << id << "updated";
+    } else {
+        qWarning() << "Failed to update task" << id;
+    }
+
+    return ok;
+}
