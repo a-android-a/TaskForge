@@ -7,6 +7,7 @@
 #include <QString>
 #include <QByteArray>
 #include "UsersDatabaseManager.h"
+#include "TaskDatabaseManager.h"
 class SslServer : public QTcpServer
 {
     Q_OBJECT
@@ -31,4 +32,5 @@ private:
     QByteArray generateSalt      (int bytes = 16);
     QString toSha256(const QString &str);
     UsersDatabaseManager usersDB;
+    TaskDatabaseManager  tasksDB;
 };
