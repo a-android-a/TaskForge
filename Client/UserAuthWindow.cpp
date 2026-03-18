@@ -1,5 +1,6 @@
 #include "UserAuthWindow.h"
 #include "network/ApiClient.h"
+#include "MainWindowWorker.h"
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QLineEdit>
@@ -10,13 +11,16 @@
 #include <QCryptographicHash>
 #include <QByteArray>
 #include <QMessageBox>
-UserAuthWindow::UserAuthWindow(QWidget* parent){
+#include <QTimer>
+UserAuthWindow::UserAuthWindow(ApiClient* apiClient, QWidget *parent)
+    : QWidget(parent)
+    , m_apiClient(apiClient){
 
     m_pLogin    = new QLineEdit();
     m_pPassword = new QLineEdit();
     m_pEnter    = new QPushButton(tr("Enter"));
     vBox        = new QVBoxLayout();
-    m_apiClient = new ApiClient(this);
+
 
     vBox->addWidget(new QLabel(tr("Login")));
     vBox->addWidget(m_pLogin);
@@ -26,9 +30,10 @@ UserAuthWindow::UserAuthWindow(QWidget* parent){
 
     this->setLayout(vBox);
     this->resize(QSize(300,300));
-    connect(m_pEnter,    &QPushButton::clicked,          this,&UserAuthWindow::slotButton             );
-    connect(m_apiClient, &ApiClient::authorizationFailed,this,&UserAuthWindow::slotAuthorizationFailed);
-    connect(m_apiClient, &ApiClient::authorizationOk,    this,&UserAuthWindow::slotAuthorizationOk    );
+    connect(m_pEnter,    &QPushButton::clicked,             this,&UserAuthWindow::slotButton             );
+    connect(m_apiClient, &ApiClient::authorizationFailed,   this,&UserAuthWindow::slotAuthorizationFailed);
+    connect(m_apiClient, &ApiClient::authorizationOk,       this,&UserAuthWindow::slotAuthorizationOk    );
+    connect(m_apiClient, &ApiClient::createWorkerWindow,    this,&UserAuthWindow::slotCreateWorkerWindow );
     m_apiClient->connectToServer();
 
 }
@@ -68,5 +73,11 @@ QString UserAuthWindow::hashString(const QString &str){
 }
 void UserAuthWindow::slotAuthorizationOk(){
 
+}
+void UserAuthWindow::slotCreateWorkerWindow(){
+    MainWindowWorker* w = new MainWindowWorker(nullptr);
+    w->setApiClient(m_apiClient);
+    this->hide();
+    w->show();
 }
 
