@@ -23,7 +23,7 @@ TaskCard::TaskCard(const Task &task, QWidget *parent)
         "background: #ffffff;"
         "border: 1px solid #e0e0e0;"
         "border-radius: 12px;"
-        );
+    );
 
 
     QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(m_pMainWidgetCard);
@@ -103,6 +103,7 @@ void TaskCard::mouseMoveEvent(QMouseEvent *event)
     QMimeData *mimeData = new QMimeData;
 
     //  transmitting task ID
+    mimeData->setProperty("cardPtr", QVariant::fromValue<void*>(this));
     mimeData->setData("application/x-task-id", QByteArray::number(m_task.id));
 
     drag->setMimeData(mimeData);
@@ -116,6 +117,6 @@ void TaskCard::mouseMoveEvent(QMouseEvent *event)
     Qt::DropAction action = drag->exec(Qt::MoveAction);
 
     if (action == Qt::MoveAction) {
-        this->hide();
+        //this->hide();
     }
 }
