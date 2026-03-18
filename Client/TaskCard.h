@@ -14,12 +14,13 @@ class TaskCard : public QWidget
 public:
     explicit TaskCard(const Task &task, QWidget *parent = nullptr);
 
-    // int taskId() const { return m_task.id; }
+     int taskId() const { return m_task.id; }
     // QString status() const { return m_task.status; }
 
 signals:
     void cardClicked(int taskId);
     void cardDropped(int taskId, const QString &newStatus);
+
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
