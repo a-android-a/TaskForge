@@ -16,18 +16,18 @@ public:
 
     void addTaskCard(TaskCard *card);
     void removeTaskCard(TaskCard *card);
-
-    QString getStatus() const { return m_status; }
+    void clearCards();
+    int status();
 
 signals:
-    void taskDropped(int taskId, const QString &newStatus);
+    void taskDropped(TaskCard* card, TaskColumn* column);
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragLeaveEvent(QDragLeaveEvent *event) override;
     void dropEvent(QDropEvent *event)           override;
 
 private:
-    QString     m_status;
+    int         m_status;
     QLabel      *m_titleLabel;
     QVBoxLayout *m_layout;
 };
