@@ -13,6 +13,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QMessageBox>
+#include <QJsonArray>
 
 ApiClient::ApiClient(QObject* parent): QSslSocket(parent)
 {
@@ -77,70 +78,97 @@ void ApiClient::connectToServer()
 }
 void ApiClient::sendToServer(const QString &data)
 {
-
     QJsonObject messageObj;
-
-    messageObj["type"] = "text";
+    messageObj["type"] = data;
     messageObj["time"] =  QTime::currentTime().toString("hh:mm:ss");;
-
-
     QJsonDocument doc(messageObj);
-
-
     QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
     jsonData += '\n';
-
     this->write(jsonData);
-
-
 }
 void ApiClient::slotReadyRead(){
 
-        QByteArray rawLine = this->readAll();
-        QString message = QString::fromUtf8(rawLine).trimmed();
-        QJsonParseError parseError;
-        QJsonDocument doc = QJsonDocument::fromJson(message .toUtf8(), &parseError);
+    QByteArray rawLine = this->readAll();
+    QString message = QString::fromUtf8(rawLine).trimmed();
+    QJsonParseError parseError;
+    QJsonDocument doc = QJsonDocument::fromJson(message .toUtf8(), &parseError);
 
-        if (parseError.error != QJsonParseError::NoError) {
-            qDebug() << "JSON error:" << parseError.errorString();
-           // continue;
-        }
+    if (parseError.error != QJsonParseError::NoError) {
+        qDebug() << "JSON error:" << parseError.errorString();
+        // continue;
+    }
 
 
-        if (!doc.isObject()) {
+    if (!doc.isObject()) {
 
-          //  continue;
-        }
+        //  continue;
+    }
 
-        QJsonObject obj = doc.object();
+    QJsonObject obj = doc.object();
 
-        QString type = obj["type"].toString();
+    QString type = obj["type"].toString();
 
-        qInfo()<<type;
-        if(type == "authorization_response"){
-            QString status = obj["status"].toString();
-            if(status == "ok"){
-                qInfo()<<"ok";
-                user.id        = obj["id"].toInt();
-                //user.createdAt = obj["created_at"].toString();
-                user.name      = obj["name"].toString();
-                user.surname   = obj["surname"].toString();
-                user.jobTitle  = obj["job_title"].toString();
-                qInfo()<< user.jobTitle;
-                if(user.jobTitle == "worker"){
-
-                    MainWindowWorker* workerWindow = new MainWindowWorker(nullptr);
-                    workerWindow->show();
-                }
-
-                emit authorizationOk();
-            }else  {
-
-                qInfo()<<"status:error";
-                emit authorizationFailed();
+    qInfo()<<type;
+    if(type == "authorization_response"){
+        QString status = obj["status"].toString();
+        if(status == "ok"){
+            qInfo()<<"ok";
+            user.id        = obj["id"].toInt();
+            //user.createdAt = obj["created_at"].toString();
+            user.name      = obj["name"].toString();
+            user.surname   = obj["surname"].toString();
+            user.jobTitle  = obj["job_title"].toString();
+            qInfo()<< user.jobTitle;
+            emit authorizationOk();
+            if(user.jobTitle == "worker"){
+                emit createWorkerWindow();
             }
+
+
+        }else  {
+
+            qInfo()<<"status:error";
+            emit authorizationFailed();
         }
+    }
+    if(type == "allTasks_response"){
+
+        QString status = obj["status"].toString();
+        if (status == "ok") {
+            QJsonArray tasksArray = obj["tasks"].toArray();
+
+            qInfo() << "tasks size:" << tasksArray.size();
+
+
+            emit tasksReceived(tasksArray);
+        } else {
+            qWarning() << "error" << obj["message"].toString();
+        }
+    }
 
 
 
+}
+
+void ApiClient::getAllTasks(){
+
+    QJsonObject messageObj;
+    messageObj["type"] = "getAllTasks";
+    messageObj["time"] =  QTime::currentTime().toString("hh:mm:ss");
+    QJsonDocument doc(messageObj);
+    QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+    jsonData += '\n';
+    this->write(jsonData);
+}
+
+void ApiClient::updateTaskStatus(const int taskID, const int newStatus){
+    QJsonObject messageObj;
+    messageObj["type"] = "updateTasks";
+    messageObj["taskID"] = taskID;
+    messageObj["status"] = newStatus;
+    messageObj["time"] =  QTime::currentTime().toString("hh:mm:ss");
+    QJsonDocument doc(messageObj);
+    QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+    jsonData += '\n';
+    this->write(jsonData);
 }
