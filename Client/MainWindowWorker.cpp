@@ -7,29 +7,72 @@
 #include <QList>
 #include <QPushButton>
 #include <QTimer>
-MainWindowWorker::MainWindowWorker(QWidget *parent): QWidget(parent)
+#include <QVBoxLayout>
+MainWindowWorker::MainWindowWorker(QWidget *parent) : QWidget(parent)
 {
-    QHBoxLayout *mainLayout = new QHBoxLayout(this);
-    mainLayout->setSpacing(10);
 
-    todoColumn    = new TaskColumn(tr("Not started"), this);
-    inProgress    = new TaskColumn(tr("At work"),     this);
-    doneColumn    = new TaskColumn(tr("Completed"),   this);
-
-    mainLayout->addWidget(todoColumn);
-    mainLayout->addWidget(inProgress);
-    mainLayout->addWidget(doneColumn);
+    QVBoxLayout *mainVertical = new QVBoxLayout(this);
+    mainVertical->setContentsMargins(0, 0, 0, 0);
+    mainVertical->setSpacing(0);
 
 
+    QWidget *topBar = new QWidget(this);
+    topBar->setFixedHeight(50);
+    topBar->setStyleSheet("background: #2c3e50;");
 
-    connect(todoColumn,     &TaskColumn::taskDropped,  this, &MainWindowWorker::onTaskDropped  );
-    connect(inProgress,     &TaskColumn::taskDropped,  this, &MainWindowWorker::onTaskDropped  );
-    connect(doneColumn,     &TaskColumn::taskDropped,  this, &MainWindowWorker::onTaskDropped  );
+    QHBoxLayout *topLayout = new QHBoxLayout(topBar);
+    topLayout->setContentsMargins(15, 0, 15, 0);
+    topLayout->setSpacing(20);
+
+
+    userLabel = new QLabel(tr("User"), topBar);
+    userLabel->setStyleSheet("color: white; font-weight: bold; font-size: 14px;");
+    topLayout->addWidget(userLabel);
+
+    topLayout->addStretch();
+
+
+    QLabel *connectionStatus = new QLabel(tr("Connection..."), topBar);
+    connectionStatus->setStyleSheet("color: #f39c12; font-weight: bold; font-size: 13px;");
+    topLayout->addWidget(connectionStatus);
+
+    // Кнопка "Выйти"
+    m_pLogoutButton = new QPushButton(tr("log out"), topBar);
+    m_pLogoutButton->setStyleSheet(
+        "background: #e74c3c; color: white; border: none; border-radius: 6px; "
+        "padding: 8px 16px; font-weight: bold;"
+        );
+    m_pLogoutButton->setCursor(Qt::PointingHandCursor);
+    connect(m_pLogoutButton, &QPushButton::clicked, this, &MainWindowWorker::onLogoutClicked);
+    topLayout->addWidget(m_pLogoutButton);
+
+    mainVertical->addWidget(topBar);
+
+
+    QHBoxLayout *kanbanLayout = new QHBoxLayout();
+    kanbanLayout->setSpacing(10);
+    kanbanLayout->setContentsMargins(10, 10, 10, 10);
+
+    todoColumn   = new TaskColumn(tr("Not started"), this);
+    inProgress   = new TaskColumn(tr("At work"), this);
+    doneColumn   = new TaskColumn(tr("Completed"), this);
+
+    kanbanLayout->addWidget(todoColumn);
+    kanbanLayout->addWidget(inProgress);
+    kanbanLayout->addWidget(doneColumn);
+
+    mainVertical->addLayout(kanbanLayout);
+
+    connect(todoColumn,   &TaskColumn::taskDropped, this, &MainWindowWorker::onTaskDropped);
+    connect(inProgress,   &TaskColumn::taskDropped, this, &MainWindowWorker::onTaskDropped);
+    connect(doneColumn,   &TaskColumn::taskDropped, this, &MainWindowWorker::onTaskDropped);
 
 
 }
 
+void MainWindowWorker::onLogoutClicked(){
 
+}
 void MainWindowWorker::setApiClient(ApiClient* apiClient){
     if (m_apiClient == apiClient) {
         return;

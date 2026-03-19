@@ -15,7 +15,10 @@ class MainWindowWorker: public QWidget
     Q_OBJECT;
 private:
     ApiClient*   m_apiClient = nullptr;
-    QVBoxLayout* m_pVBoxLayout;
+    QVBoxLayout* mainVertical;
+    QLabel*      userLabel;
+    QHBoxLayout* topLayout;
+    QWidget*     topBar;
     TaskColumn*  todoColumn;
     TaskColumn*  inProgress;
     TaskColumn*  doneColumn;
@@ -23,6 +26,7 @@ private:
 private slots:
     void onTaskDropped(TaskCard* card, TaskColumn* targetColumn);
     void onTasksReceived(const QJsonArray &tasksArray);
+    void onLogoutClicked();
 public:
     explicit MainWindowWorker(QWidget *parent = nullptr);
     void setApiClient(ApiClient* apiClient);
