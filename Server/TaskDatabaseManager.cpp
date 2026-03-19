@@ -114,3 +114,18 @@ bool TaskDatabaseManager::updateTask(qint64 id, const Task& task)
 
     return ok;
 }
+bool TaskDatabaseManager::updateStatus(const long long id, const long long newStatus)
+{
+    QSqlQuery query(m_db);
+
+    query.prepare("UPDATE Task SET status = :status WHERE id = :id");
+    query.bindValue(":status", newStatus);
+    query.bindValue(":id", id);
+
+    if (!query.exec()) {
+        qInfo() << "Ошибка обновления статуса:" << query.lastError().text();
+        return false;
+    }
+
+    return query.numRowsAffected() > 0;
+}

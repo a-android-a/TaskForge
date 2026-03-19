@@ -11,5 +11,6 @@ public:
     QVector<Task> getAllTasks();
     bool createTask(const Task& task);
     bool updateTask(const qint64 id, const Task &task);
+    bool updateStatus(const long long id , const long long newStatus);
 
 };
