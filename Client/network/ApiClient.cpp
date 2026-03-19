@@ -145,6 +145,10 @@ void ApiClient::slotReadyRead(){
             qWarning() << "error" << obj["message"].toString();
         }
     }
+    if(type == "updateTasks_response"){
+        //qInfo() << "tasks size:" << tasksArray.size();
+        getAllTasks();
+    }
 
 
 
