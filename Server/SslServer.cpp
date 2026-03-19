@@ -205,7 +205,28 @@ void SslServer::onReadyRead()
             qInfo() << "Tasks sent:" << tasks.size();
         }
         else if(type == "updateTasks"){
-
+            long long  id     = jsonObj.value("taskID").toInt();
+            long long status = jsonObj.value("status").toInt();
+            tasksDB.updateStatus(id,status);
+            qInfo() << "ID: " <<id <<" status: "<< status;
+            Task t = tasksDB.getTaskById(id);
+            QJsonObject taskObj;
+            taskObj["id"]          = t.id;
+            taskObj["status"]      = t.status;
+            taskObj["priority"]    = t.priority;
+            taskObj["taskName"]    = t.taskName;
+            taskObj["description"] = t.description;
+            taskObj["due_date"]    = t.due_date;
+            taskObj["created_by"]  = t.created_by;
+            taskObj["assigned_to"] = t.assigned_to;
+            taskObj["type"] = "updateTasks_response";
+            QJsonDocument doc(taskObj);
+            QByteArray result = doc.toJson(QJsonDocument::Compact);
+            result.append('\n');
+           // socket->write(result);
+            for (QTcpSocket* client : m_clients) {
+                client->write(result);
+            }
         }
 
     }
@@ -289,5 +310,5 @@ void SslServer::onSslErrors(const QList<QSslError> &errors)
     }
 
 
-    socket->ignoreSslErrors();
+    //socket->ignoreSslErrors();
 }
