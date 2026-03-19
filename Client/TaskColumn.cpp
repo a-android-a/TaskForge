@@ -99,12 +99,18 @@ void TaskColumn::dropEvent(QDropEvent *event)
     event->acceptProposedAction();
 }
 
-void TaskColumn::clearCards(){
-    // while (QLayoutItem* item = m_layout->takeAt(0)) {
-    //     if (QWidget* w = item->widget())
-    //         w->deleteLater();
-    //     delete item;
-    // }
+void TaskColumn::clearCards()
+{
+    // Удаляем ВСЕ элементы, кроме stretch в конце
+    while (m_layout->count() > 1) {
+        QLayoutItem* item = m_layout->takeAt(0);
+
+        if (QWidget* w = item->widget()) {
+            w->deleteLater();   // корректно удаляет TaskCard
+        }
+
+        delete item;
+    }
 }
 int TaskColumn::status()  { return m_status; }
 
