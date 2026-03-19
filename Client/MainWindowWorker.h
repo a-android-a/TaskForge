@@ -31,4 +31,5 @@ public:
     explicit MainWindowWorker(QWidget *parent = nullptr);
     void setApiClient(ApiClient* apiClient);
     void setTasks(QVector<Task> tasks);
+    bool setStyle(const QString& fileStyle);
 };

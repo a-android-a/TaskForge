@@ -8,40 +8,40 @@
 #include <QPushButton>
 #include <QTimer>
 #include <QVBoxLayout>
+#include <QFile>
+
+
 MainWindowWorker::MainWindowWorker(QWidget *parent) : QWidget(parent)
 {
-
+    // Единственный главный вертикальный layout
     QVBoxLayout *mainVertical = new QVBoxLayout(this);
     mainVertical->setContentsMargins(0, 0, 0, 0);
     mainVertical->setSpacing(0);
 
-
+    // Верхняя панель (докбар)
     QWidget *topBar = new QWidget(this);
     topBar->setFixedHeight(50);
-    topBar->setStyleSheet("background: #2c3e50;");
+    topBar->setObjectName("topBar");
 
     QHBoxLayout *topLayout = new QHBoxLayout(topBar);
     topLayout->setContentsMargins(15, 0, 15, 0);
     topLayout->setSpacing(20);
 
-
+    // Имя пользователя
     userLabel = new QLabel(tr("User"), topBar);
-    userLabel->setStyleSheet("color: white; font-weight: bold; font-size: 14px;");
+    userLabel->setObjectName("userLabel");
     topLayout->addWidget(userLabel);
 
     topLayout->addStretch();
 
 
     QLabel *connectionStatus = new QLabel(tr("Connection..."), topBar);
-    connectionStatus->setStyleSheet("color: #f39c12; font-weight: bold; font-size: 13px;");
+    connectionStatus->setObjectName("connectionStatus");
     topLayout->addWidget(connectionStatus);
 
-    // Кнопка "Выйти"
+
     m_pLogoutButton = new QPushButton(tr("log out"), topBar);
-    m_pLogoutButton->setStyleSheet(
-        "background: #e74c3c; color: white; border: none; border-radius: 6px; "
-        "padding: 8px 16px; font-weight: bold;"
-        );
+    m_pLogoutButton->setObjectName("logoutButton");
     m_pLogoutButton->setCursor(Qt::PointingHandCursor);
     connect(m_pLogoutButton, &QPushButton::clicked, this, &MainWindowWorker::onLogoutClicked);
     topLayout->addWidget(m_pLogoutButton);
@@ -66,6 +66,9 @@ MainWindowWorker::MainWindowWorker(QWidget *parent) : QWidget(parent)
     connect(todoColumn,   &TaskColumn::taskDropped, this, &MainWindowWorker::onTaskDropped);
     connect(inProgress,   &TaskColumn::taskDropped, this, &MainWindowWorker::onTaskDropped);
     connect(doneColumn,   &TaskColumn::taskDropped, this, &MainWindowWorker::onTaskDropped);
+
+
+
 
 
 }
@@ -103,7 +106,7 @@ void MainWindowWorker::setApiClient(ApiClient* apiClient){
 
 void MainWindowWorker::onTasksReceived(const QJsonArray &tasksArray){
 
-    qInfo() << "Получено задач:" << tasksArray.size();
+    qInfo() << ":" << tasksArray.size();
     if (!todoColumn) {
         qCritical() << "todoColumn == nullptr!";
         return;
@@ -158,6 +161,17 @@ void MainWindowWorker::onTasksReceived(const QJsonArray &tasksArray){
     }
 
 
+}
+bool MainWindowWorker::setStyle(const QString &styleFileName){
+
+    QFile file(styleFileName);
+    if(file.open(QFile::ReadOnly)){
+        QString strCSS = QLatin1String(file.readAll());
+        this->setStyleSheet(strCSS);
+        file.close();
+        return true;
+    }
+    return false;
 }
 
 void MainWindowWorker::onTaskDropped(TaskCard* card, TaskColumn* targetColumn)

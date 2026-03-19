@@ -4,57 +4,60 @@
 #include <QDebug>
 #include <QScrollArea>
 #include <QLayoutItem>
+#include <QStyle>
 TaskColumn::TaskColumn(const QString &title, QWidget *parent)
     : QWidget(parent)
-     // todo, in_progress, done
 {
     setAcceptDrops(true);
     setMinimumWidth(280);
 
-    // Main column style (background, border)
-    setStyleSheet("background: #f5f5f5; border: 1px solid #d0d0d0; border-radius: 8px;");
+    setObjectName("taskColumn");
 
     if (title == "Not started")      m_status = 0;
     else if (title == "At work")     m_status = 1;
     else if (title == "Completed")   m_status = 2;
     else                             m_status = -1;
-    // Main vertical layout
+
+    // ВНЕШНИЙ ЛЕЙАУТ
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->setContentsMargins(8, 8, 8, 8);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
 
-    // Column title
-    m_titleLabel = new QLabel(title, this);
+    // ВНУТРЕННИЙ КОНТЕЙНЕР КОЛОНКИ
+    QWidget *columnBody = new QWidget(this);
+    columnBody->setObjectName("taskColumnBody");
+
+    QVBoxLayout *bodyLayout = new QVBoxLayout(columnBody);
+    bodyLayout->setContentsMargins(8, 8, 8, 8);
+    bodyLayout->setSpacing(0);
+
+    // Заголовок
+    m_titleLabel = new QLabel(title, columnBody);
     m_titleLabel->setAlignment(Qt::AlignCenter);
-    m_titleLabel->setStyleSheet(
-        "font-weight: bold; "
-        "font-size: 16px; "
-        "color: white; "
-        "background: #424242; "
-        "padding: 12px; "
-        "border-radius: 8px 8px 0 0;"
-        );
-    mainLayout->addWidget(m_titleLabel);
+    m_titleLabel->setObjectName("taskColumnTitle");
+    bodyLayout->addWidget(m_titleLabel);
 
     // Scroll area
-    QScrollArea *scrollArea = new QScrollArea(this);
+    QScrollArea *scrollArea = new QScrollArea(columnBody);
     scrollArea->setWidgetResizable(true);
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    scrollArea->setStyleSheet("QScrollArea { border: none; background: transparent; }");
+    scrollArea->setObjectName("taskColumnScroll");
 
-    // Container for cards
     QWidget *cardsContainer = new QWidget(scrollArea);
+    cardsContainer->setObjectName("taskCardsContainer");
+
     m_layout = new QVBoxLayout(cardsContainer);
     m_layout->setSpacing(12);
     m_layout->setContentsMargins(8, 8, 8, 8);
     m_layout->addStretch();
 
     scrollArea->setWidget(cardsContainer);
+    bodyLayout->addWidget(scrollArea);
 
-    // add scroll to main layout
-    mainLayout->addWidget(scrollArea);
+    mainLayout->addWidget(columnBody);
 }
+
 
 void TaskColumn::addTaskCard(TaskCard *card)
 {
@@ -71,14 +74,18 @@ void TaskColumn::dragEnterEvent(QDragEnterEvent *event)
     if (event->mimeData()->hasFormat("application/x-task-id")) {
         event->acceptProposedAction();
         // Highlight on hover
-        setStyleSheet("background: #e8f5e9; border: 2px dashed #4caf50; border-radius: 8px;");
+        setProperty("hover", true);
+        style()->unpolish(this);
+        style()->polish(this);
     }
 }
 
 void TaskColumn::dragLeaveEvent(QDragLeaveEvent *event)
 {
     // Return to normal style
-    setStyleSheet("background: #f5f5f5; border: 1px solid #d0d0d0; border-radius: 8px;");
+    setProperty("hover", false);
+    style()->unpolish(this);
+    style()->polish(this);
 }
 
 void TaskColumn::dropEvent(QDropEvent *event)
@@ -95,12 +102,16 @@ void TaskColumn::dropEvent(QDropEvent *event)
 
     emit taskDropped(card, this);
 
-    setStyleSheet("background: #f5f5f5; border: 1px solid #d0d0d0; border-radius: 8px;");
+
+    setProperty("hover", false);
+    style()->unpolish(this);
+    style()->polish(this);
     event->acceptProposedAction();
 }
 
-void TaskColumn::clearCards()
-{
+void TaskColumn::clearCards(){
+
+
     // Удаляем ВСЕ элементы, кроме stretch в конце
     while (m_layout->count() > 1) {
         QLayoutItem* item = m_layout->takeAt(0);
@@ -111,6 +122,7 @@ void TaskColumn::clearCards()
 
         delete item;
     }
+
 }
 int TaskColumn::status()  { return m_status; }
 

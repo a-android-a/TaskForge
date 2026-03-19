@@ -12,6 +12,7 @@
 #include <QByteArray>
 #include <QMessageBox>
 #include <QTimer>
+#include <QString>
 UserAuthWindow::UserAuthWindow(ApiClient* apiClient, QWidget *parent)
     : QWidget(parent)
     , m_apiClient(apiClient){
@@ -35,7 +36,24 @@ UserAuthWindow::UserAuthWindow(ApiClient* apiClient, QWidget *parent)
     connect(m_apiClient, &ApiClient::authorizationOk,       this,&UserAuthWindow::slotAuthorizationOk    );
     connect(m_apiClient, &ApiClient::createWorkerWindow,    this,&UserAuthWindow::slotCreateWorkerWindow );
     m_apiClient->connectToServer();
+    m_pLogin->setObjectName("authLogin");
+    m_pPassword->setObjectName("authPassword");
+    m_pEnter->setObjectName("authButton");
+    this->setObjectName("authWindow");
+    m_pPassword->setEchoMode(QLineEdit::Password);
 
+
+}
+bool UserAuthWindow::setStyle(const QString &styleFileName){
+
+    QFile file(styleFileName);
+    if(file.open(QFile::ReadOnly)){
+        QString strCSS = QLatin1String(file.readAll());
+        this->setStyleSheet(strCSS);
+        file.close();
+        return true;
+    }
+    return false;
 }
 
 void UserAuthWindow::slotButton(){
@@ -55,17 +73,7 @@ void UserAuthWindow::slotAuthorizationFailed(){
     QMessageBox::warning(this, tr("Missing information"),tr("login or password incorrect"));
 }
 
-bool UserAuthWindow::setStyle(const QString &styleFileName){
-    QFile file(styleFileName);
-    if(file.open(QFile::ReadOnly)){
-        QString strCSS = QLatin1String(file.readAll());
-        this->setStyleSheet(strCSS);
-        file.close();
-        return true;
-    }
-    return false;
 
-}
 QString UserAuthWindow::hashString(const QString &str){
     QByteArray hash = QCryptographicHash::hash(str.toUtf8(), QCryptographicHash::Sha256);
     QString hashHex = hash.toHex();
@@ -77,6 +85,7 @@ void UserAuthWindow::slotAuthorizationOk(){
 void UserAuthWindow::slotCreateWorkerWindow(){
     MainWindowWorker* w = new MainWindowWorker(nullptr);
     w->setApiClient(m_apiClient);
+    w->setStyle("style/stylesMainWindowWorkerLight.qss");
     this->hide();
     w->show();
 }

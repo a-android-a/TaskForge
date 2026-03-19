@@ -10,64 +10,48 @@
 TaskCard::TaskCard(const Task &task, QWidget *parent)
     : QWidget(parent), m_task(task)
 {
+    setObjectName("taskCard"); // внешний контейнер (прозрачный)
 
     QVBoxLayout *outerLayout = new QVBoxLayout(this);
     outerLayout->setContentsMargins(0, 0, 0, 0);
     outerLayout->setSpacing(0);
 
-
+    // ВНУТРЕННИЙ КОНТЕЙНЕР — ОСНОВНАЯ КАРТОЧКА
     m_pMainWidgetCard = new QWidget(this);
+    m_pMainWidgetCard->setObjectName("taskCardMain");
 
-
-    m_pMainWidgetCard->setStyleSheet(
-        "background: #ffffff;"
-        "border: 1px solid #e0e0e0;"
-        "border-radius: 12px;"
-    );
-
-
+    // ТЕНЬ — на основном контейнере
     QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(m_pMainWidgetCard);
     shadow->setBlurRadius(12);
     shadow->setColor(QColor(0, 0, 0, 80));
     shadow->setOffset(3, 4);
     m_pMainWidgetCard->setGraphicsEffect(shadow);
 
-
     QVBoxLayout *innerLayout = new QVBoxLayout(m_pMainWidgetCard);
     innerLayout->setContentsMargins(16, 16, 16, 16);
     innerLayout->setSpacing(8);
 
-
     QLabel *title = new QLabel(task.taskName, m_pMainWidgetCard);
+    title->setObjectName("taskCardTitle");
     title->setWordWrap(true);
-    title->setStyleSheet("font-weight: bold; font-size: 15px; color: #111111;");
 
+    QLabel *prio = new QLabel(QString("Priority: %1").arg(task.priority), m_pMainWidgetCard);
+    prio->setObjectName("taskCardPriority");
+    prio->setProperty("priority", task.priority);
 
-
-    QLabel *prio = new QLabel(QString(tr("Priority: %1")).arg(task.priority), m_pMainWidgetCard);
-    QString prioColor = (task.priority <= 2) ? "#c62828" : (task.priority == 3 ? "#f57c00" : "#2e7d32");
-    prio->setStyleSheet(QString("color: %1; font-size: 13px;").arg(prioColor));
-
-
-
-    QLabel *due = new QLabel(tr("before: ") + task.due_date, m_pMainWidgetCard);
-    due->setStyleSheet("color: #555555; font-size: 13px;");
-
+    QLabel *due = new QLabel("before: " + task.due_date, m_pMainWidgetCard);
+    due->setObjectName("taskCardDue");
 
     QLabel *desc = new QLabel(task.description, m_pMainWidgetCard);
+    desc->setObjectName("taskCardDescription");
     desc->setWordWrap(true);
-    desc->setStyleSheet("color: #666666; font-size: 12px; line-height: 1.4;");
 
+    QPushButton *btnDetails = new QPushButton("More detailed", m_pMainWidgetCard);
+    btnDetails->setObjectName("taskCardButton");
 
-    QPushButton *btnDetails = new QPushButton(tr("More detailed"), m_pMainWidgetCard);
-    btnDetails->setStyleSheet(
-        "background: #1976d2; color: white; border: none; border-radius: 6px; padding: 8px;"
-        "font-weight: bold;"
-        );
     connect(btnDetails, &QPushButton::clicked, this, [this]() {
         emit cardClicked(m_task.id);
     });
-
 
     innerLayout->addWidget(title);
     innerLayout->addWidget(prio);
@@ -75,7 +59,6 @@ TaskCard::TaskCard(const Task &task, QWidget *parent)
     innerLayout->addWidget(desc);
     innerLayout->addStretch();
     innerLayout->addWidget(btnDetails);
-
 
     outerLayout->addWidget(m_pMainWidgetCard);
 }
