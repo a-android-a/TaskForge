@@ -34,6 +34,14 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         TaskColumn.cpp
         TaskCard.h
         TaskCard.cpp
+        TaskInfoWindow.cpp
+        TaskInfoWindow.h
+        TaskCreationWindow.cpp
+        TaskCreationWindow.h
+        MainWindowAdmin.h
+        MainWindowAdmin.cpp
+        MainWindowManager.h
+        MainWindowManager.cpp
 
 
     )
