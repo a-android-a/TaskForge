@@ -3,6 +3,7 @@
 #include "network/ApiClient.h"
 #include "TaskCard.h"
 #include "../Server/Task.h"
+#include "TaskInfoWindow.h"
 #include <QWidget>
 #include <QList>
 #include <QPushButton>
@@ -13,12 +14,12 @@
 
 MainWindowWorker::MainWindowWorker(QWidget *parent) : QWidget(parent)
 {
-    // Единственный главный вертикальный layout
+
     QVBoxLayout *mainVertical = new QVBoxLayout(this);
     mainVertical->setContentsMargins(0, 0, 0, 0);
     mainVertical->setSpacing(0);
+    this->resize(QSize(800,800));
 
-    // Верхняя панель (докбар)
     QWidget *topBar = new QWidget(this);
     topBar->setFixedHeight(50);
     topBar->setObjectName("topBar");
@@ -27,7 +28,7 @@ MainWindowWorker::MainWindowWorker(QWidget *parent) : QWidget(parent)
     topLayout->setContentsMargins(15, 0, 15, 0);
     topLayout->setSpacing(20);
 
-    // Имя пользователя
+    // User Name
     userLabel = new QLabel(tr("User"), topBar);
     userLabel->setObjectName("userLabel");
     topLayout->addWidget(userLabel);
@@ -35,8 +36,9 @@ MainWindowWorker::MainWindowWorker(QWidget *parent) : QWidget(parent)
     topLayout->addStretch();
 
 
-    QLabel *connectionStatus = new QLabel(tr("Connection..."), topBar);
-    connectionStatus->setObjectName("connectionStatus");
+    connectionStatus = new QLabel(tr("Connection..."), topBar);
+    //connectionStatus->setObjectName("connectionStatus");
+    connectionStatus->setStyleSheet(" color: #f39c12;  font-weight: bold; font-size: 13px;");
     topLayout->addWidget(connectionStatus);
 
 
@@ -76,6 +78,14 @@ MainWindowWorker::MainWindowWorker(QWidget *parent) : QWidget(parent)
 void MainWindowWorker::onLogoutClicked(){
 
 }
+void MainWindowWorker::onCardClicked(const int taskId){
+    TaskInfoWindow *infoWindow = new TaskInfoWindow(nullptr);
+    infoWindow->resize(600, 400);
+    infoWindow->setWindowTitle(tr("Task info "));
+    infoWindow->show();
+    infoWindow->raise();
+    infoWindow->activateWindow();
+}
 void MainWindowWorker::setApiClient(ApiClient* apiClient){
     if (m_apiClient == apiClient) {
         return;
@@ -100,6 +110,8 @@ void MainWindowWorker::setApiClient(ApiClient* apiClient){
                 Qt::QueuedConnection);
 
         m_apiClient->getAllTasks();
+        connectionStatus->setText(tr("Connected"));
+        connectionStatus->setStyleSheet(" color: #3CF527;  font-weight: bold; font-size: 13px;");
     }
 
 }
@@ -123,7 +135,7 @@ void MainWindowWorker::onTasksReceived(const QJsonArray &tasksArray){
     todoColumn->clearCards();
     inProgress->clearCards();
     doneColumn->clearCards();
-
+    tasks.clear();
     for (const QJsonValue &val : tasksArray) {
         QJsonObject obj = val.toObject();
 
@@ -143,9 +155,10 @@ void MainWindowWorker::onTasksReceived(const QJsonArray &tasksArray){
         // qInfo() << "Due:" << t.due_date;
         // qInfo() << "Priority:" << t.priority;
         // qInfo() << "Status:" << t.status;
-
+        tasks.append(t);
 
         TaskCard *card = new TaskCard(t, this);
+        connect(card,         &TaskCard::cardClicked,   this, &MainWindowWorker::onCardClicked);
         if (t.status == 0) {
 
             todoColumn->addTaskCard(card);
@@ -186,5 +199,13 @@ void MainWindowWorker::onTaskDropped(TaskCard* card, TaskColumn* targetColumn)
     card->show();
     int newStatus = targetColumn->status();
     m_apiClient->updateTaskStatus(card->taskId(), newStatus);
+}
+
+void MainWindowWorker::setUser(const User& user){
+    this->user = user;
+    if(!user.name.isEmpty() && !user.name.isEmpty()){
+        userLabel->setText(user.name + ": " + user.jobTitle);
+    }
+
 }
 
