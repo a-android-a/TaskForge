@@ -12,6 +12,6 @@ int main(int argc, char *argv[])
 
     UserAuthWindow auth(apiClient, nullptr);
     auth.show();
-    auth.setStyle("style/stylesAuth.qss");
+    auth.setStyle("style/stylesMainWindowWorkerLight.qss");
     return a.exec();
 }
