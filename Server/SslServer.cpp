@@ -228,7 +228,23 @@ void SslServer::onReadyRead()
                 client->write(result);
             }
         }
+        else if(type == "createTask"){
+            Task t;
 
+            t.id          = jsonObj["id"].toString().toLongLong();
+            t.status      = jsonObj["status"].toString().toLongLong();
+            t.priority    = jsonObj["priority"].toString().toLongLong();
+            t.taskName    = jsonObj["taskName"].toString();
+            t.description = jsonObj["description"].toString();
+            t.due_date    = jsonObj["due_date"].toString();
+            t.created_by  = jsonObj["created_by"].toString();
+            t.assigned_to = jsonObj["assigned_to"].toString();
+
+            tasksDB.createTask(t);
+
+        } else if(type == "createUser"){qInfo()<<"createUser";
+
+        }
     }
 }
 
