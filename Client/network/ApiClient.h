@@ -23,11 +23,13 @@ public:
     void authenticate(const QString &login, const QString password);
     void getAllTasks();
     void updateTaskStatus(const int taskID, const int newTask);
+    void createTask(const Task& task);
+    void createUser(const User& user);
 signals:
     void authorizationFailed();
     void authorizationOk();
     void tasksReceived(const QJsonArray &TasksArry);
-    void createWorkerWindow();
+    void createWorkerWindow(const User& user);
 private slots:
     void slotReadyRead();
 

@@ -14,7 +14,7 @@
 #include <QJsonObject>
 #include <QMessageBox>
 #include <QJsonArray>
-
+#include <QDateTime>
 ApiClient::ApiClient(QObject* parent): QSslSocket(parent)
 {
     connect(this, &QSslSocket::readyRead, this, &ApiClient::slotReadyRead);
@@ -121,7 +121,7 @@ void ApiClient::slotReadyRead(){
             qInfo()<< user.jobTitle;
             emit authorizationOk();
             if(user.jobTitle == "worker"){
-                emit createWorkerWindow();
+                emit createWorkerWindow(user);
             }
 
 
@@ -154,6 +154,22 @@ void ApiClient::slotReadyRead(){
 
 }
 
+void ApiClient::createTask(const Task& task){
+    QJsonObject messageObj;
+    messageObj["type"]        = "createTask";
+    messageObj["id"]          = QString::number(task.id);
+    messageObj["status"]      = QString::number(task.status);
+    messageObj["priority"]    = QString::number(task.priority);
+    messageObj["taskName"]    = task.taskName;
+    messageObj["description"] = task.description;
+    messageObj["due_date"]    = task.due_date;
+    messageObj["created_by"]  = task.created_by;
+    messageObj["assigned_to"] = task.assigned_to;
+    QJsonDocument doc(messageObj);
+    QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+    jsonData += '\n';
+    this->write(jsonData);
+}
 void ApiClient::getAllTasks(){
 
     QJsonObject messageObj;
@@ -171,6 +187,22 @@ void ApiClient::updateTaskStatus(const int taskID, const int newStatus){
     messageObj["taskID"] = taskID;
     messageObj["status"] = newStatus;
     messageObj["time"] =  QTime::currentTime().toString("hh:mm:ss");
+    QJsonDocument doc(messageObj);
+    QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+    jsonData += '\n';
+    this->write(jsonData);
+}
+
+void ApiClient::createUser(const User& user){
+    QJsonObject messageObj;
+    QDateTime   createdAt;
+    messageObj["type"] = "createUser";
+    messageObj["id"]         = user.id;
+    messageObj["createdAt"]  = createdAt.toString(Qt::ISODate);
+    messageObj["name"]       = user.name;
+    messageObj["surname"]    = user.surname;
+    messageObj["jobTitle"]   = user.jobTitle;
+    messageObj["isBanned"]   = user.isBanned;
     QJsonDocument doc(messageObj);
     QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
     jsonData += '\n';
