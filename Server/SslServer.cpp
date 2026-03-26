@@ -2,6 +2,7 @@
 #include "UsersDatabaseManager.h"
 #include "TaskDatabaseManager.h"
 #include "Task.h"
+
 #include <QVector>
 #include <QFile>
 #include <QSslKey>
@@ -223,7 +224,7 @@ void SslServer::onReadyRead()
             QJsonDocument doc(taskObj);
             QByteArray result = doc.toJson(QJsonDocument::Compact);
             result.append('\n');
-           // socket->write(result);
+            // socket->write(result);
             for (QTcpSocket* client : m_clients) {
                 client->write(result);
             }
@@ -242,13 +243,69 @@ void SslServer::onReadyRead()
 
             tasksDB.createTask(t);
 
-        } else if(type == "createUser"){qInfo()<<"createUser";
+        } else if(type == "createUser"){
+            qInfo() << "createUser";
 
+            // jsonObj.value("type").toString()
+            QString name      = jsonObj["name"].toString();
+            QString surname   = jsonObj["surname"].toString();
+            QString jobTitle  = jsonObj["jobTitle"].toString();
+            QString login     = jsonObj["login"].toString();
+            QString password  = jsonObj["password"].toString();
+            qInfo() << "Login"<< login<<'\t'<<"pass "<<password;
+            bool ok = usersDB.createUser(name, surname, jobTitle, login, password);
+
+
+            QJsonObject messageObj;
+            messageObj["type"] = "createUser_response";
+
+            if (ok){
+
+                messageObj["status"] = "ok";
+            }
+            else{
+                qInfo() << "Failed to create user";
+                messageObj["status"] = "error";
+            }
+            QJsonDocument doc(messageObj);
+            QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+            jsonData += '\n';
+            socket->write(jsonData);
         }
+        else if(type == "getAllUsers"){
+            qInfo() << "getAllUsers";
+            QList<User> users = usersDB.getAllUsers();
+
+            QJsonArray usersArray;
+            for (const User &u : users) {
+                QJsonObject userObj;
+                userObj["userId"]     = u.id;
+                userObj["name"]       = u.name;
+                userObj["surname"]    = u.surname;
+                userObj["job_title"]  = u.jobTitle;
+                userObj["is_Banned"]   = u.isBanned;
+
+                usersArray.append(userObj);
+            }
+
+            QJsonObject response;
+            response["type"]   = "getAllUsers_response";
+            response["status"] = "ok";
+            response["users"]  = usersArray;
+
+            QJsonDocument doc(response);
+            QByteArray result = doc.toJson(QJsonDocument::Compact);
+            result.append('\n');
+            qInfo()<<doc;
+            socket->write(result);
+        }
+
+
     }
 }
 
-QByteArray generateSalt(int bytes = 16)
+
+QByteArray SslServer::generateSalt(int bytes )
 {
     QByteArray salt(bytes, Qt::Uninitialized);
 
@@ -287,24 +344,37 @@ QString SslServer::toSha256(const QString &str){
 }
 
 
-User SslServer::authenticate(const QString &passwd, const QString &login, int &statusCode){
+User SslServer::authenticate(const QString &passwd, const QString &login, int &statusCode)
+{
+    statusCode = 0;
 
-    QString loginHash    = toSha256(login);
-    User u               = usersDB.getUserByLoginHash(loginHash);
-    QString passwrodHash = toSha256(passwd);
+    // 1. Хешируем логин
+    QString loginHash = toSha256(login);
 
-    QByteArray Salt = QByteArray::fromBase64(u.password_salt.toUtf8());
+    // 2. Ищем пользователя
+    User u = usersDB.getUserByLoginHash(loginHash);
 
-    QString passwrodHashSalt     = hashPasswordPBKDF2(passwrodHash,Salt);
-    QString passwrodHashSaltUser = hashPasswordPBKDF2(u.passwordHash,Salt);
 
-    qInfo()<<passwrodHashSaltUser;
-    qInfo()<<passwrodHashSalt;
+    // 3. Достаём соль
+    QByteArray salt = QByteArray::fromBase64(u.password_salt.toUtf8());
 
-    if(passwrodHashSaltUser == passwrodHashSalt) statusCode = 1;
+    // 4. SHA256 введённого пароля
+    QString passwordSha256 = toSha256(passwd);
+
+    // 5. PBKDF2(SHA256(password), salt)
+    QString passwordHashInput = hashPasswordPBKDF2(passwordSha256, salt);
+    qInfo()<<passwordHashInput;
+    qInfo()<< u.passwordHash;
+    // 6. Сравниваем с тем, что в базе
+    if (passwordHashInput == u.passwordHash) {
+        statusCode = 1; // успех
+    } else {
+        statusCode = 0; // неверный пароль
+    }
 
     return u;
 }
+
 
 void SslServer::onDisconnected()
 {
