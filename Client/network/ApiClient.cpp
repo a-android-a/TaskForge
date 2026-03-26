@@ -122,6 +122,11 @@ void ApiClient::slotReadyRead(){
             emit authorizationOk();
             if(user.jobTitle == "worker"){
                 emit createWorkerWindow(user);
+            }else if(user.jobTitle == "manager"){
+
+            }
+            else if(user.jobTitle == "admin"){
+
             }
 
 
@@ -148,6 +153,26 @@ void ApiClient::slotReadyRead(){
     if(type == "updateTasks_response"){
         //qInfo() << "tasks size:" << tasksArray.size();
         getAllTasks();
+    }
+    if (type == "getAllUsers_response") {
+
+        QList<User> users;
+
+        QJsonArray arr = obj["users"].toArray();
+        for (const QJsonValue &val : arr) {
+            QJsonObject obj = val.toObject();
+
+            User u;
+            u.id        = obj["userId"].toInt();
+            u.name      = obj["name"].toString();
+            u.surname   = obj["surname"].toString();
+            u.jobTitle  = obj["job_title"].toString();
+            u.isBanned  = obj["is_Banned"].toInt();
+
+            users.append(u);
+        }
+
+        emit usersListReceived(users);
     }
 
 
@@ -202,7 +227,19 @@ void ApiClient::createUser(const User& user){
     messageObj["name"]       = user.name;
     messageObj["surname"]    = user.surname;
     messageObj["jobTitle"]   = user.jobTitle;
+    messageObj["password"]   = user.passwordHash;
+    messageObj["login"]      = user.loginHash;
     messageObj["isBanned"]   = user.isBanned;
+    QJsonDocument doc(messageObj);
+    QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+    jsonData += '\n';
+    this->write(jsonData);
+}
+
+void ApiClient::getAllUsers(){
+    QJsonObject messageObj;
+    messageObj["type"] = "getAllUsers";
+    messageObj["time"] =  QTime::currentTime().toString("hh:mm:ss");
     QJsonDocument doc(messageObj);
     QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
     jsonData += '\n';

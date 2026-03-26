@@ -5,7 +5,7 @@
 #include "../Config.h"
 #include "../../Server/User.h"
 #include "../../Server/Task.h"
-
+#include <QList>
 #include <QJsonArray>
 class ApiClient:public QSslSocket{
     Q_OBJECT;
@@ -25,11 +25,13 @@ public:
     void updateTaskStatus(const int taskID, const int newTask);
     void createTask(const Task& task);
     void createUser(const User& user);
+    void getAllUsers();
 signals:
     void authorizationFailed();
     void authorizationOk();
     void tasksReceived(const QJsonArray &TasksArry);
     void createWorkerWindow(const User& user);
+    void usersListReceived(const QList<User>& user);
 private slots:
     void slotReadyRead();
 
