@@ -1,5 +1,6 @@
 #include "MainWindowAdmin.h"
 #include "WindowCreateUser.h"
+#include "UserManagementWindow.h"
 #include "../Server/User.h"
 #include "../Server/Task.h"
 
@@ -60,48 +61,50 @@ void MainWindowAdmin::setupUI()
 
 void MainWindowAdmin::setupUserControls()
 {
-    // Создаём layout для блока пользователей
+
     layoutUsers = new QVBoxLayout(this);
 
     m_btnCreateUser = new QPushButton(tr("Create a user"), this);
-    m_btnBanUser    = new QPushButton(tr("Ban a user"), this);
-    m_btnUnbanUser  = new QPushButton(tr("Unbanking a user"), this);
-    m_btnUserList   = new QPushButton(tr("List of users"), this);
+    m_btnBanUserUnbanUser  = new QPushButton(tr("Unbanking a user/Ban a user"), this);
+
 
     m_btnCreateUser->setObjectName("btnCreateUser");
-    m_btnBanUser->setObjectName("btnBanUser");
-    m_btnUnbanUser->setObjectName("btnUnbanUser");
-    m_btnUserList->setObjectName("btnUserList");
+
+    m_btnBanUserUnbanUser->setObjectName("btnUnbanUser");
+
 
 
     layoutUsers->addWidget(m_btnCreateUser);
-    layoutUsers->addWidget(m_btnBanUser);
-    layoutUsers->addWidget(m_btnUnbanUser);
-    layoutUsers->addWidget(m_btnUserList);
+    layoutUsers->addWidget(m_btnBanUserUnbanUser);
 
-    // Добавляем в главный layout
+
+
     m_mainLayout->addLayout(layoutUsers);
 
     // Заглушки
 
-    connect(m_btnCreateUser, &QPushButton::clicked, this, &MainWindowAdmin::onBtnCreateUser);
+    connect(m_btnCreateUser,       &QPushButton::clicked, this, &MainWindowAdmin::onBtnCreateUser  );
+    connect(m_btnBanUserUnbanUser, &QPushButton::clicked, this, &MainWindowAdmin::onBtnBanUnbanUser);
 
-    connect(m_btnBanUser, &QPushButton::clicked, [](){
-        qInfo() << "Ban user clicked";
-    });
 
-    connect(m_btnUnbanUser, &QPushButton::clicked, [](){
+
+    connect(m_btnBanUserUnbanUser, &QPushButton::clicked, [](){
         qInfo() << "Unban user clicked";
     });
 
-    connect(m_btnUserList, &QPushButton::clicked, [](){
-        qInfo() << "User list clicked";
-    });
-}
 
+}
+void MainWindowAdmin::onBtnBanUnbanUser(){
+    UserManagementWindow* w = new UserManagementWindow(this);
+    w->show();
+
+    m_apiClient->getAllUsers();
+
+    connect(m_apiClient, &ApiClient::usersListReceived, w, &UserManagementWindow::setUsers);
+}
 void MainWindowAdmin::setupTaskControls()
 {
-    // Layout для блока задач
+
     layoutTasks = new QVBoxLayout(this);
 
     m_btnCreateTask = new QPushButton(tr("Create a task"), this);
@@ -120,10 +123,10 @@ void MainWindowAdmin::setupTaskControls()
     layoutTasks->addWidget(m_btnEditTask);
     layoutTasks->addWidget(m_btnTaskList);
 
-    // Добавляем в главный layout
+
     m_mainLayout->addLayout(layoutTasks);
 
-    // Заглушки
+
     connect(m_btnCreateTask, &QPushButton::clicked, [](){
         qInfo() << "Create task clicked";
     });

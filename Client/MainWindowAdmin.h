@@ -27,9 +27,8 @@ private:
     // Кнопки пользователей
     QVBoxLayout* layoutUsers;
     QPushButton* m_btnCreateUser;
-    QPushButton* m_btnBanUser;
-    QPushButton* m_btnUnbanUser;
-    QPushButton* m_btnUserList;
+    QPushButton* m_btnBanUserUnbanUser;
+
 
     // Кнопки задач
     QVBoxLayout* layoutTasks;
@@ -41,7 +40,7 @@ private:
     QPushButton* m_pLogoutButton;
 private slots:
     void onBtnCreateUser();
-    // void onBtnBanUser();
+    void onBtnBanUnbanUser();
     // void onBtnUnbanUser();
     // void onBtnUserList();
 
