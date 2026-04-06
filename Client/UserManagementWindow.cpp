@@ -17,12 +17,12 @@ UserManagementWindow::UserManagementWindow(QWidget *parent)
     table->setSelectionMode(QAbstractItemView::SingleSelection);
     table->horizontalHeader()->setStretchLastSection(true);
 
-    btnBan = new QPushButton("Заблокировать");
-    btnUnban = new QPushButton("Разблокировать");
-    btnRefresh = new QPushButton("Обновить");
+    btnBan     = new QPushButton(tr("Block"));
+    btnUnban   = new QPushButton(tr("Unblock"));
+    btnRefresh = new QPushButton(tr("Update"));
 
-    connect(btnBan, &QPushButton::clicked, this, &UserManagementWindow::onBanClicked);
-    connect(btnUnban, &QPushButton::clicked, this, &UserManagementWindow::onUnbanClicked);
+    connect(btnBan,     &QPushButton::clicked, this, &UserManagementWindow::onBanClicked);
+    connect(btnUnban,   &QPushButton::clicked, this, &UserManagementWindow::onUnbanClicked);
     connect(btnRefresh, &QPushButton::clicked, this, &UserManagementWindow::onRefreshClicked);
 
     QHBoxLayout *btnLayout = new QHBoxLayout;
@@ -38,7 +38,7 @@ UserManagementWindow::UserManagementWindow(QWidget *parent)
     mainLayout->addLayout(btnLayout);
 
     setLayout(mainLayout);
-    setWindowTitle("Список пользователей");
+    setWindowTitle(tr("List of users"));
     resize(700, 400);
 
 }
@@ -73,18 +73,17 @@ int UserManagementWindow::getSelectedUserId() const
 void UserManagementWindow::onBanClicked()
 {
     int id = getSelectedUserId();
-    //if (id > 0)
-        // emit banUserRequested(id);
+    if (id > 0)  emit banUserRequested(id);
 }
 
 void UserManagementWindow::onUnbanClicked()
 {
     int id = getSelectedUserId();
-    //if (id > 0)
-        // emit unbanUserRequested(id);
+    if (id > 0) emit unbanUserRequested(id);
+
 }
 
 void UserManagementWindow::onRefreshClicked()
 {
-    // emit refreshRequested();
+    emit refreshRequested();
 }
