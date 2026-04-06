@@ -26,11 +26,15 @@ public:
     void createTask(const Task& task);
     void createUser(const User& user);
     void getAllUsers();
+    void banUser    (const int userID);
+    void unBanUser  (const int userID);
 signals:
     void authorizationFailed();
     void authorizationOk();
     void tasksReceived(const QJsonArray &TasksArry);
     void createWorkerWindow(const User& user);
+    void createAdminWindow(const User& user);
+    void createManagerWindow(const User& user);
     void usersListReceived(const QList<User>& user);
 private slots:
     void slotReadyRead();

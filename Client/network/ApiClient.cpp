@@ -123,10 +123,10 @@ void ApiClient::slotReadyRead(){
             if(user.jobTitle == "worker"){
                 emit createWorkerWindow(user);
             }else if(user.jobTitle == "manager"){
-
+                emit createManagerWindow(user);
             }
             else if(user.jobTitle == "admin"){
-
+                emit createAdminWindow(user);
             }
 
 
@@ -235,7 +235,26 @@ void ApiClient::createUser(const User& user){
     jsonData += '\n';
     this->write(jsonData);
 }
-
+void ApiClient::banUser(const int userID){
+    QJsonObject messageObj;
+    messageObj["type"] = "banUser";
+    messageObj["id"] = userID;
+    messageObj["time"] =  QTime::currentTime().toString("hh:mm:ss");
+    QJsonDocument doc(messageObj);
+    QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+    jsonData += '\n';
+    this->write(jsonData);
+}
+void ApiClient::unBanUser(const int userID){
+    QJsonObject messageObj;
+    messageObj["type"] = "unBanUser";
+    messageObj["id"] = userID;
+    messageObj["time"] =  QTime::currentTime().toString("hh:mm:ss");
+    QJsonDocument doc(messageObj);
+    QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+    jsonData += '\n';
+    this->write(jsonData);
+}
 void ApiClient::getAllUsers(){
     QJsonObject messageObj;
     messageObj["type"] = "getAllUsers";
