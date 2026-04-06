@@ -241,7 +241,9 @@ void SslServer::onReadyRead()
             t.created_by  = jsonObj["created_by"].toString();
             t.assigned_to = jsonObj["assigned_to"].toString();
 
-            tasksDB.createTask(t);
+            if(tasksDB.createTask(t)){
+
+            }
 
         } else if(type == "createUser"){
             qInfo() << "createUser";
@@ -299,7 +301,16 @@ void SslServer::onReadyRead()
             qInfo()<<doc;
             socket->write(result);
         }
-
+        else if (type == "banUser") {
+            int id = jsonObj["id"].toInt();
+            qInfo() << "banUser id =" << id;
+            usersDB.setBannedStatus(id, true);
+        }
+        else if (type == "unBanUser") {
+            int id = jsonObj["id"].toInt();
+            qInfo() << "unBanUser id =" << id;
+            usersDB.setBannedStatus(id, false);
+        }
 
     }
 }
