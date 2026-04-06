@@ -114,7 +114,8 @@ QList<User> UsersDatabaseManager::getAllUsers()
 bool UsersDatabaseManager::setBannedStatus(int id, bool banned)
 {
     return exec(
-        "UPDATE \"Users \" SET is_banned = :b WHERE id = :id",
+        "UPDATE Users SET is_banned = :b WHERE id = :id",
         {{":b", banned ? 1 : 0}, {":id", id}}
         );
 }
+
