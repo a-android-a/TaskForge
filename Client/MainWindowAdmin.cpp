@@ -1,6 +1,8 @@
 #include "MainWindowAdmin.h"
 #include "WindowCreateUser.h"
 #include "UserManagementWindow.h"
+#include "MainWindowManager.h"
+#include "MainWindowWorker.h"
 #include "../Server/User.h"
 #include "../Server/Task.h"
 
@@ -56,6 +58,7 @@ void MainWindowAdmin::setupUI()
     setupTaskControls();
 
     m_mainLayout->addStretch();
+
 }
 
 
@@ -101,6 +104,37 @@ void MainWindowAdmin::onBtnBanUnbanUser(){
     m_apiClient->getAllUsers();
 
     connect(m_apiClient, &ApiClient::usersListReceived, w, &UserManagementWindow::setUsers);
+    connect(w, &UserManagementWindow::banUserRequested,this,      &MainWindowAdmin::onBanClicked);
+    connect(w, &UserManagementWindow::unbanUserRequested,this,    &MainWindowAdmin::onUnbanClicked);
+    connect(w, &UserManagementWindow::refreshRequested,this,      &MainWindowAdmin::onRefreshClicked);
+
+
+
+
+}
+void MainWindowAdmin::onBanClicked(int userId){
+    qInfo()<<"onBanClicked "<<userId;
+    m_apiClient->banUser(userId);
+}
+
+void MainWindowAdmin::onUnbanClicked(int userId){
+     qInfo()<<"onUnbanClicked "<<userId;
+    m_apiClient->unBanUser(userId);
+}
+void MainWindowAdmin::onRefreshClicked(){
+
+}
+void MainWindowAdmin::onBtnCreateTask(){
+    MainWindowManager* w = new MainWindowManager(nullptr);
+    w->setStyle("style/stylesMainWindowWorkerLight.qss");
+    w->setApiClient(m_apiClient);
+    w->show();
+}
+void MainWindowAdmin::onBtnTaskList(){
+    MainWindowWorker* w = new MainWindowWorker(nullptr);
+    w->setStyle("style/stylesMainWindowWorkerLight.qss");
+    w->setApiClient(m_apiClient);
+    w->show();
 }
 void MainWindowAdmin::setupTaskControls()
 {
@@ -127,9 +161,7 @@ void MainWindowAdmin::setupTaskControls()
     m_mainLayout->addLayout(layoutTasks);
 
 
-    connect(m_btnCreateTask, &QPushButton::clicked, [](){
-        qInfo() << "Create task clicked";
-    });
+    connect(m_btnCreateTask,   &QPushButton::clicked, this, &MainWindowAdmin::onBtnCreateTask );
 
     connect(m_btnDeleteTask, &QPushButton::clicked, [](){
         qInfo() << "Delete task clicked";
@@ -139,9 +171,7 @@ void MainWindowAdmin::setupTaskControls()
         qInfo() << "Edit task clicked";
     });
 
-    connect(m_btnTaskList, &QPushButton::clicked, [](){
-        qInfo() << "Task list clicked";
-    });
+    connect(m_btnTaskList,   &QPushButton::clicked, this, &MainWindowAdmin::onBtnTaskList );
 }
 
 bool MainWindowAdmin::setStyle(const QString &styleFileName){

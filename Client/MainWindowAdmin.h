@@ -44,10 +44,13 @@ private slots:
     // void onBtnUnbanUser();
     // void onBtnUserList();
 
-    // void onBtnCreateTask();
+    void onBanClicked  (int userId);
+    void onUnbanClicked(int userId);
+    void onRefreshClicked();
+    void onBtnCreateTask();
     // void onBtnDeleteTask();
     // void onBtnEditTask();
-    // void onBtnTaskList();
+    void onBtnTaskList();
     void onUserCreated(const User& user);
 public:
 
