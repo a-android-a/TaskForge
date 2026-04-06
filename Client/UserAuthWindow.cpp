@@ -1,6 +1,8 @@
 #include "UserAuthWindow.h"
 #include "network/ApiClient.h"
 #include "MainWindowWorker.h"
+#include "MainWindowManager.h"
+#include "MainWindowAdmin.h"
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QLineEdit>
@@ -35,6 +37,8 @@ UserAuthWindow::UserAuthWindow(ApiClient* apiClient, QWidget *parent)
     connect(m_apiClient, &ApiClient::authorizationFailed,   this,&UserAuthWindow::slotAuthorizationFailed);
     connect(m_apiClient, &ApiClient::authorizationOk,       this,&UserAuthWindow::slotAuthorizationOk    );
     connect(m_apiClient, &ApiClient::createWorkerWindow,    this,&UserAuthWindow::slotCreateWorkerWindow );
+    connect(m_apiClient, &ApiClient::createAdminWindow,     this,&UserAuthWindow::slotCreateAdminWindow  );
+    connect(m_apiClient, &ApiClient::createManagerWindow,   this,&UserAuthWindow::slotCreateManagerWindow);
     m_apiClient->connectToServer();
     m_pLogin->setObjectName("authLogin");
     m_pPassword->setObjectName("authPassword");
@@ -82,11 +86,32 @@ QString UserAuthWindow::hashString(const QString &str){
 void UserAuthWindow::slotAuthorizationOk(){
 
 }
-void UserAuthWindow::slotCreateWorkerWindow(){
-    MainWindowWorker* w = new MainWindowWorker(nullptr);
+void UserAuthWindow::slotCreateAdminWindow(const User& user){
+    MainWindowAdmin* w = new MainWindowAdmin(nullptr);
+    w->setApiClient(m_apiClient);
+    // w->setStyle("style/stylesMainWindowWorkerLight.qss");
+    //w->setUser(user);
+    w->setStyle("style/stylesMainWindowWorkerLight.qss");
+    this->hide();
+    w->show();
+}
+void UserAuthWindow::slotCreateManagerWindow(const User& user){
+    MainWindowManager* w = new MainWindowManager(nullptr);
     w->setApiClient(m_apiClient);
     w->setStyle("style/stylesMainWindowWorkerLight.qss");
     this->hide();
     w->show();
+}
+void UserAuthWindow::slotCreateWorkerWindow(const User& user){
+    MainWindowWorker* w = new MainWindowWorker(nullptr);
+    w->setApiClient(m_apiClient);
+    w->setStyle("style/stylesMainWindowWorkerLight.qss");
+    w->setUser(user);
+    this->hide();
+    w->show();
+
+
+
+
 }
 

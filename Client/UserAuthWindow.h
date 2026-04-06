@@ -1,7 +1,8 @@
 #pragma once
 #include <QWidget>
 #include "network/ApiClient.h"
-#include"MainWindowWorker.h"
+#include "MainWindowWorker.h"
+#include "MainWindowManager.h"
 class QLineEdit;
 class QPushButton;
 class QVBoxLayout;
@@ -15,6 +16,7 @@ private:
     QVBoxLayout* vBox;
     ApiClient*   m_apiClient = nullptr;
     MainWindowWorker* m_mainWindow = nullptr;
+    MainWindowManager* m_manager = nullptr;
     void sendAuthRequest(const QString &login, const QString &password);
     QString hashString  (const QString &str); // <- sha256
 public:
@@ -25,6 +27,8 @@ private slots:
     void slotButton();
     void slotAuthorizationFailed();
     void slotAuthorizationOk();
-    void slotCreateWorkerWindow();
+    void slotCreateWorkerWindow (const User &user);
+    void slotCreateAdminWindow  (const User &user);
+    void slotCreateManagerWindow(const User &user);
 
 };
