@@ -183,7 +183,7 @@ void SslServer::onReadyRead()
                 taskObj["status"]      = t.status;
                 taskObj["priority"]    = t.priority;
                 taskObj["taskName"]    = t.taskName;
-                taskObj["description"] = t.description;
+               // taskObj["description"] = t.description;
                 taskObj["due_date"]    = t.due_date;
                 taskObj["created_by"]  = t.created_by;
                 taskObj["assigned_to"] = t.assigned_to;
@@ -216,7 +216,7 @@ void SslServer::onReadyRead()
             taskObj["status"]      = t.status;
             taskObj["priority"]    = t.priority;
             taskObj["taskName"]    = t.taskName;
-            taskObj["description"] = t.description;
+           // taskObj["description"] = t.description;
             taskObj["due_date"]    = t.due_date;
             taskObj["created_by"]  = t.created_by;
             taskObj["assigned_to"] = t.assigned_to;
@@ -236,12 +236,12 @@ void SslServer::onReadyRead()
             t.status      = jsonObj["status"].toString().toLongLong();
             t.priority    = jsonObj["priority"].toString().toLongLong();
             t.taskName    = jsonObj["taskName"].toString();
-            t.description = jsonObj["description"].toString();
+            //t.description = jsonObj["description"].toString();
             t.due_date    = jsonObj["due_date"].toString();
             t.created_by  = jsonObj["created_by"].toString();
             t.assigned_to = jsonObj["assigned_to"].toString();
 
-            if(tasksDB.createTask(t)){
+            if(tasksDB.createTask(t,jsonObj["description"].toString())){
 
             }
 
@@ -310,6 +310,18 @@ void SslServer::onReadyRead()
             int id = jsonObj["id"].toInt();
             qInfo() << "unBanUser id =" << id;
             usersDB.setBannedStatus(id, false);
+        }
+        else if (type == "getDescription") {
+            qint64 id = jsonObj["id"].toInt();
+            qInfo() << "getDescription " << id;
+            QString des = tasksDB.getDescription(id);
+            qInfo() << "Description " << des;
+            QJsonObject messageObj;
+            messageObj["type"] = "description_response";
+            messageObj["description"] = des;
+            QJsonDocument doc(messageObj);
+            QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+            socket->write(jsonData);
         }
 
     }
