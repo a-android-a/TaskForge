@@ -3,6 +3,7 @@
 #include "network/ApiClient.h"
 #include "../Server/Task.h"
 #include "../Server/User.h"
+#include "TaskInfoWindow.h"
 #include "TaskColumn.h"
 #include <QJsonArray>
 class QTextEdit;
@@ -15,6 +16,7 @@ class MainWindowWorker: public QWidget
 {
     Q_OBJECT;
 private:
+    TaskInfoWindow* m_infoWindow;
     ApiClient*   m_apiClient = nullptr;
     QVBoxLayout* mainVertical;
     QLabel*      userLabel;
@@ -27,11 +29,14 @@ private:
     QLabel*      connectionStatus;
     QVector<Task>tasks;
     User user;
+    QString des;
+    qint64 m_currentTaskId;
 private slots:
     void onTaskDropped(TaskCard* card, TaskColumn* targetColumn);
     void onTasksReceived(const QJsonArray &tasksArray);
     void onLogoutClicked();
     void onCardClicked(const int taskId);
+    void onDescriptionList(const QString& des);
 public:
     explicit MainWindowWorker(QWidget *parent = nullptr);
     void setApiClient(ApiClient* apiClient);

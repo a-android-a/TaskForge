@@ -78,14 +78,27 @@ MainWindowWorker::MainWindowWorker(QWidget *parent) : QWidget(parent)
 void MainWindowWorker::onLogoutClicked(){
 
 }
-void MainWindowWorker::onCardClicked(const int taskId){
-    TaskInfoWindow *infoWindow = new TaskInfoWindow(nullptr);
-    infoWindow->resize(600, 400);
-    infoWindow->setWindowTitle(tr("Task info "));
-    infoWindow->show();
-    infoWindow->raise();
-    infoWindow->activateWindow();
+void MainWindowWorker::onCardClicked(int taskId)
+{
+    m_currentTaskId= taskId;
+    Task taskShow;
+    for(const Task &t : tasks){
+        if(t.id == m_currentTaskId){
+            taskShow = t;
+            break;
+        }
+    }
+    qInfo()<<des;
+    m_infoWindow = new TaskInfoWindow(nullptr,taskShow);
+    m_infoWindow->resize(600, 400);
+    m_infoWindow->setWindowTitle(tr("Task info"));
+    m_infoWindow->setStyle("style/stylesMainWindowWorkerLight.qss");
+    m_infoWindow->show();
+    m_infoWindow->raise();
+    m_infoWindow->activateWindow();
+    m_apiClient->getDescription(taskShow.id);
 }
+
 void MainWindowWorker::setApiClient(ApiClient* apiClient){
     if (m_apiClient == apiClient) {
         return;
@@ -105,9 +118,8 @@ void MainWindowWorker::setApiClient(ApiClient* apiClient){
 
 
         //connect(m_apiClient, &ApiClient::tasksReceived,this,        &MainWindowWorker::onTasksReceived);
-        connect(m_apiClient, &ApiClient::tasksReceived,
-                this, &MainWindowWorker::onTasksReceived,
-                Qt::QueuedConnection);
+        connect(m_apiClient, &ApiClient::tasksReceived          ,this, &MainWindowWorker::onTasksReceived,Qt::QueuedConnection);
+        connect(m_apiClient, &ApiClient::descriptionListReceived,this, &MainWindowWorker::onDescriptionList);
 
         m_apiClient->getAllTasks();
         connectionStatus->setText(tr("Connected"));
@@ -115,7 +127,10 @@ void MainWindowWorker::setApiClient(ApiClient* apiClient){
     }
 
 }
-
+void MainWindowWorker::onDescriptionList(const QString& des){
+    qInfo()<<des;
+    m_infoWindow->setDescription(des);
+}
 void MainWindowWorker::onTasksReceived(const QJsonArray &tasksArray){
 
     qInfo() << ":" << tasksArray.size();
@@ -144,7 +159,7 @@ void MainWindowWorker::onTasksReceived(const QJsonArray &tasksArray){
         t.status      = obj["status"].toInt();
         t.priority    = obj["priority"].toInt();
         t.taskName    = obj["taskName"].toString();
-        t.description = obj["description"].toString();
+        //t.description = obj["description"].toString();
         t.due_date    = obj["due_date"].toString();
         t.created_by  = obj["created_by"].toString();
         t.assigned_to = obj["assigned_to"].toString();
@@ -208,4 +223,3 @@ void MainWindowWorker::setUser(const User& user){
     }
 
 }
-
