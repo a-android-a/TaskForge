@@ -22,6 +22,7 @@ UserAuthWindow::UserAuthWindow(ApiClient* apiClient, QWidget *parent)
     m_pLogin    = new QLineEdit();
     m_pPassword = new QLineEdit();
     m_pEnter    = new QPushButton(tr("Enter"));
+    m_pReconnect= new QPushButton(tr("Reconnect"));
     vBox        = new QVBoxLayout();
 
 
@@ -30,6 +31,7 @@ UserAuthWindow::UserAuthWindow(ApiClient* apiClient, QWidget *parent)
     vBox->addWidget(new QLabel(tr("Password")));
     vBox->addWidget(m_pPassword);
     vBox->addWidget(m_pEnter);
+    vBox->addWidget(m_pReconnect);
 
     this->setLayout(vBox);
     this->resize(QSize(300,300));

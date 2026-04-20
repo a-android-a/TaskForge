@@ -13,6 +13,7 @@ private:
     QLineEdit*   m_pLogin;
     QLineEdit*   m_pPassword;
     QPushButton* m_pEnter;
+    QPushButton* m_pReconnect;
     QVBoxLayout* vBox;
     ApiClient*   m_apiClient = nullptr;
     MainWindowWorker* m_mainWindow = nullptr;
