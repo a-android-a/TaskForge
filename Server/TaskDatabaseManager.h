@@ -9,8 +9,9 @@ public:
 
     Task getTaskById(qint64 id);
     QVector<Task> getAllTasks();
-    bool createTask(const Task& task);
+    bool createTask(const Task& task, const QString des);
     bool updateTask(const qint64 id, const Task &task);
     bool updateStatus(const long long id , const long long newStatus);
+    QString getDescription(const qint64 id);
 
 };

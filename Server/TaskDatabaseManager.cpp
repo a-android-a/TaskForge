@@ -20,7 +20,7 @@ Task TaskDatabaseManager::getTaskById(qint64 id)
     t.status      = row.value("status").toLongLong();
     t.priority    = row.value("priority").toLongLong();
     t.taskName    = row.value("taskName").toString();
-    t.description = row.value("description").toString();
+    //t.description = row.value("description").toString();
     t.due_date    = row.value("due_date").toString();
     t.created_by  = row.value("created_by").toString();
     t.assigned_to = row.value("assigned_to").toString();
@@ -43,7 +43,7 @@ QVector<Task> TaskDatabaseManager::getAllTasks()
         t.status      = row.value("status").toLongLong();
         t.priority    = row.value("priority").toLongLong();
         t.taskName    = row.value("taskName").toString();
-        t.description = row.value("description").toString();
+        //t.description = row.value("description").toString();
         t.due_date    = row.value("due_date").toString();
         t.created_by  = row.value("created_by").toString();
         t.assigned_to = row.value("assigned_to").toString();
@@ -54,7 +54,7 @@ QVector<Task> TaskDatabaseManager::getAllTasks()
     return tasks;
 }
 
-bool TaskDatabaseManager::createTask(const Task& task)
+bool TaskDatabaseManager::createTask(const Task& task,const QString des)
 {
     qint64 newId = -1;
 
@@ -65,7 +65,7 @@ bool TaskDatabaseManager::createTask(const Task& task)
             {":status",      task.status},
             {":priority",    task.priority},
             {":taskName",    task.taskName},
-            {":description", task.description},
+            {":description", des},
             {":due_date",    task.due_date},
             {":created_by",  task.created_by},
             {":assigned_to", task.assigned_to}
@@ -99,7 +99,7 @@ bool TaskDatabaseManager::updateTask(qint64 id, const Task& task)
             {":status",      task.status},
             {":priority",    task.priority},
             {":taskName",    task.taskName},
-            {":description", task.description},
+            //{":description", task.description},
             {":due_date",    task.due_date},
             {":created_by",  task.created_by},
             {":assigned_to", task.assigned_to}
@@ -128,4 +128,20 @@ bool TaskDatabaseManager::updateStatus(const long long id, const long long newSt
     }
 
     return query.numRowsAffected() > 0;
+}
+QString TaskDatabaseManager::getDescription(const qint64 id){
+    QSqlQuery query(m_db);
+    query.prepare("SELECT description FROM Task WHERE id = :id");
+    query.bindValue(":id", id);
+
+    if (!query.exec()) {
+        qWarning() << "SQL error:" << query.lastError().text();
+        return QString(); // пустая строка
+    }
+
+    if (query.next()) {
+        return query.value(0).toString();
+    }
+
+    return QString(); // если нет записи
 }
