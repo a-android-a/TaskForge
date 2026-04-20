@@ -21,11 +21,11 @@ TaskCard::TaskCard(const Task &task, QWidget *parent)
     m_pMainWidgetCard->setObjectName("taskCardMain");
 
     // ТЕНЬ — на основном контейнере
-    QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(m_pMainWidgetCard);
-    shadow->setBlurRadius(12);
-    shadow->setColor(QColor(0, 0, 0, 80));
-    shadow->setOffset(3, 4);
-    m_pMainWidgetCard->setGraphicsEffect(shadow);
+    // QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(m_pMainWidgetCard);
+    // shadow->setBlurRadius(12);
+    // shadow->setColor(QColor(0, 0, 0, 80));
+    // shadow->setOffset(3, 4);
+    // m_pMainWidgetCard->setGraphicsEffect(shadow);
 
     QVBoxLayout *innerLayout = new QVBoxLayout(m_pMainWidgetCard);
     innerLayout->setContentsMargins(16, 16, 16, 16);
@@ -42,9 +42,9 @@ TaskCard::TaskCard(const Task &task, QWidget *parent)
     QLabel *due = new QLabel("before: " + task.due_date, m_pMainWidgetCard);
     due->setObjectName("taskCardDue");
 
-    QLabel *desc = new QLabel(task.description, m_pMainWidgetCard);
-    desc->setObjectName("taskCardDescription");
-    desc->setWordWrap(true);
+    // QLabel *desc = new QLabel(task.description, m_pMainWidgetCard);
+    // desc->setObjectName("taskCardDescription");
+    // desc->setWordWrap(true);
 
     QPushButton *btnDetails = new QPushButton("More detailed", m_pMainWidgetCard);
     btnDetails->setObjectName("taskCardButton");
@@ -56,8 +56,8 @@ TaskCard::TaskCard(const Task &task, QWidget *parent)
     innerLayout->addWidget(title);
     innerLayout->addWidget(prio);
     innerLayout->addWidget(due);
-    innerLayout->addWidget(desc);
-    innerLayout->addStretch();
+   // innerLayout->addWidget(desc);
+   // innerLayout->addStretch();
     innerLayout->addWidget(btnDetails);
 
     outerLayout->addWidget(m_pMainWidgetCard);
@@ -68,7 +68,7 @@ void TaskCard::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         m_dragStartPosition = event->pos();
         QWidget::mousePressEvent(event);
-        emit cardClicked(m_task.id);
+        //emit cardClicked(m_task.id);
     }
 }
 

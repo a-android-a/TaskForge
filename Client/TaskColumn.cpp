@@ -62,6 +62,8 @@ TaskColumn::TaskColumn(const QString &title, QWidget *parent)
 void TaskColumn::addTaskCard(TaskCard *card)
 {
     m_layout->insertWidget(m_layout->count() - 1, card);
+    //m_layout->addWidget(card);
+
 }
 
 void TaskColumn::removeTaskCard(TaskCard *card)

@@ -114,16 +114,19 @@ void MainWindowManager::onButtonAddTask()
                 }
             }
         }
-        QJsonObject descObj;
-        descObj["main"] = m_pDescription->text();
-        descObj["tasks"] = tasksArray;
-        QJsonDocument descDoc(descObj);
-        QString descriptionJsonString = descDoc.toJson(QJsonDocument::Compact);
-        task.description = descriptionJsonString;
-        qInfo()<<task.description;
 
+
+        QJsonObject descriptionObj;
+        descriptionObj["main"] = m_pDescription->text();
+        descriptionObj["tasks"] = tasksArray;
+
+        QString descriptionJson = QString::fromUtf8(
+            QJsonDocument(descriptionObj).toJson(QJsonDocument::Compact)
+            );
+
+        // Отправляем JSON на сервер
         if (m_apiClient)
-            m_apiClient->createTask(task);
+            m_apiClient->createTask(task, descriptionJson);
     }else {
         QMessageBox::warning(this, tr("Error"), tr("all fields must be filled in"));
 

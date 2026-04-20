@@ -24,7 +24,7 @@ MainWindowAdmin::MainWindowAdmin(QWidget* parent)
 
 void MainWindowAdmin::setupUI()
 {
-    m_centralWidget = new QWidget(this);
+   // m_centralWidget = new QWidget(this);
     m_mainLayout = new QVBoxLayout(this);
 
     QWidget *topBar = new QWidget(this);
@@ -65,7 +65,7 @@ void MainWindowAdmin::setupUI()
 void MainWindowAdmin::setupUserControls()
 {
 
-    layoutUsers = new QVBoxLayout(this);
+    layoutUsers = new QVBoxLayout();
 
     m_btnCreateUser = new QPushButton(tr("Create a user"), this);
     m_btnBanUserUnbanUser  = new QPushButton(tr("Unbanking a user/Ban a user"), this);
@@ -118,7 +118,7 @@ void MainWindowAdmin::onBanClicked(int userId){
 }
 
 void MainWindowAdmin::onUnbanClicked(int userId){
-     qInfo()<<"onUnbanClicked "<<userId;
+    qInfo()<<"onUnbanClicked "<<userId;
     m_apiClient->unBanUser(userId);
 }
 void MainWindowAdmin::onRefreshClicked(){
@@ -139,7 +139,7 @@ void MainWindowAdmin::onBtnTaskList(){
 void MainWindowAdmin::setupTaskControls()
 {
 
-    layoutTasks = new QVBoxLayout(this);
+    layoutTasks = new QVBoxLayout();
 
     m_btnCreateTask = new QPushButton(tr("Create a task"), this);
     m_btnDeleteTask = new QPushButton(tr("Delete an issue"), this);
