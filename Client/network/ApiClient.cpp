@@ -174,19 +174,23 @@ void ApiClient::slotReadyRead(){
 
         emit usersListReceived(users);
     }
+    if (type == "description_response") {
+        QString description = obj["description"].toString();
+        emit descriptionListReceived(description);
+    }
 
 
 
 }
 
-void ApiClient::createTask(const Task& task){
+void ApiClient::createTask(const Task& task,const QString des){
     QJsonObject messageObj;
     messageObj["type"]        = "createTask";
     messageObj["id"]          = QString::number(task.id);
     messageObj["status"]      = QString::number(task.status);
     messageObj["priority"]    = QString::number(task.priority);
     messageObj["taskName"]    = task.taskName;
-    messageObj["description"] = task.description;
+    messageObj["description"] = des;
     messageObj["due_date"]    = task.due_date;
     messageObj["created_by"]  = task.created_by;
     messageObj["assigned_to"] = task.assigned_to;
@@ -258,6 +262,16 @@ void ApiClient::unBanUser(const int userID){
 void ApiClient::getAllUsers(){
     QJsonObject messageObj;
     messageObj["type"] = "getAllUsers";
+    messageObj["time"] =  QTime::currentTime().toString("hh:mm:ss");
+    QJsonDocument doc(messageObj);
+    QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+    jsonData += '\n';
+    this->write(jsonData);
+}
+void ApiClient::getDescription(const qint64 TaskID){
+    QJsonObject messageObj;
+    messageObj["type"] = "getDescription";
+    messageObj["id"] = TaskID;
     messageObj["time"] =  QTime::currentTime().toString("hh:mm:ss");
     QJsonDocument doc(messageObj);
     QByteArray jsonData = doc.toJson(QJsonDocument::Compact);

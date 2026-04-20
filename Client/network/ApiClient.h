@@ -23,11 +23,12 @@ public:
     void authenticate(const QString &login, const QString password);
     void getAllTasks();
     void updateTaskStatus(const int taskID, const int newTask);
-    void createTask(const Task& task);
+    void createTask(const Task& task, const QString des);
     void createUser(const User& user);
     void getAllUsers();
     void banUser    (const int userID);
     void unBanUser  (const int userID);
+    void getDescription(const qint64 TaskID);
 signals:
     void authorizationFailed();
     void authorizationOk();
@@ -36,6 +37,7 @@ signals:
     void createAdminWindow(const User& user);
     void createManagerWindow(const User& user);
     void usersListReceived(const QList<User>& user);
+    void descriptionListReceived(const QString& des);
 private slots:
     void slotReadyRead();
 
