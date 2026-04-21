@@ -45,6 +45,7 @@ UserAuthWindow::UserAuthWindow(ApiClient* apiClient, QWidget *parent)
     m_pLogin->setObjectName("authLogin");
     m_pPassword->setObjectName("authPassword");
     m_pEnter->setObjectName("authButton");
+    m_pReconnect->setObjectName("reconnectButton");
     this->setObjectName("authWindow");
     m_pPassword->setEchoMode(QLineEdit::Password);
 

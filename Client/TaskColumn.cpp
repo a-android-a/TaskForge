@@ -114,7 +114,7 @@ void TaskColumn::dropEvent(QDropEvent *event)
 void TaskColumn::clearCards(){
 
 
-    // Удаляем ВСЕ элементы, кроме stretch в конце
+
     while (m_layout->count() > 1) {
         QLayoutItem* item = m_layout->takeAt(0);
 
