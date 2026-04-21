@@ -74,6 +74,12 @@ MainWindowWorker::MainWindowWorker(QWidget *parent) : QWidget(parent)
 
 
 }
+void MainWindowWorker::onTaskUpdated(const Task &task, const QString &descriptionJson){
+    m_apiClient->updateTaskDescription(task.id, descriptionJson);
+
+    // Обновляем локальные данные
+
+}
 
 void MainWindowWorker::onLogoutClicked(){
 
@@ -97,6 +103,7 @@ void MainWindowWorker::onCardClicked(int taskId)
     m_infoWindow->raise();
     m_infoWindow->activateWindow();
     m_apiClient->getDescription(taskShow.id);
+    connect(m_infoWindow, &TaskInfoWindow::taskUpdated, this, &MainWindowWorker::onTaskUpdated);
 }
 
 void MainWindowWorker::setApiClient(ApiClient* apiClient){
