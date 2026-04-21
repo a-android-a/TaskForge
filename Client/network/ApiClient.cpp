@@ -278,3 +278,14 @@ void ApiClient::getDescription(const qint64 TaskID){
     jsonData += '\n';
     this->write(jsonData);
 }
+void ApiClient::updateTaskDescription(const qint64 id, const QString& descriptionJson ){
+    QJsonObject messageObj;
+    messageObj["type"] = "updateTaskDescription";
+    messageObj["id"] = id;
+    messageObj["description"] = descriptionJson;
+    messageObj["time"] =  QTime::currentTime().toString("hh:mm:ss");
+    QJsonDocument doc(messageObj);
+    QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+    jsonData += '\n';
+    this->write(jsonData);
+}

@@ -29,6 +29,7 @@ public:
     void banUser    (const int userID);
     void unBanUser  (const int userID);
     void getDescription(const qint64 TaskID);
+    void updateTaskDescription(const qint64 id, const QString &descriptionJson );
 signals:
     void authorizationFailed();
     void authorizationOk();
