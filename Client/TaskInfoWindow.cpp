@@ -22,11 +22,11 @@ TaskInfoWindow::TaskInfoWindow(QWidget *parent,const Task &task)
     mainLayout->setContentsMargins(20, 20, 20, 20);
     mainLayout->setSpacing(15);
 
-    // Заголовок
+
     QLabel *titleLabel = new QLabel(tr("Task name: ") + task.taskName, this);
     mainLayout->addWidget(titleLabel);
 
-    // Описание
+
     QLabel *descLabel = new QLabel(tr("Description:" ) , this);
     mainLayout->addWidget(descLabel);
 
@@ -35,19 +35,18 @@ TaskInfoWindow::TaskInfoWindow(QWidget *parent,const Task &task)
     descriptionEdit->setReadOnly(true);
     mainLayout->addWidget(descriptionEdit);
 
-    // Дедлайн
+
     QLabel *dueLabel = new QLabel(tr("Due date: ") +  task.due_date, this);
     mainLayout->addWidget(dueLabel);
 
-    // Приоритет
+
     QLabel *priorityLabel = new QLabel(tr("Priority:") + QString::number(task.priority), this);
     mainLayout->addWidget(priorityLabel);
 
-    // Статус
+
     QLabel *statusLabel = new QLabel(tr("Status: ") + QString::number(task.status), this);
     mainLayout->addWidget(statusLabel);
 
-    // Прогресс
     QLabel *progressLabel = new QLabel(tr("Progress:"), this);
     mainLayout->addWidget(progressLabel);
 
@@ -56,19 +55,18 @@ TaskInfoWindow::TaskInfoWindow(QWidget *parent,const Task &task)
     progressBar->setValue(0);
     mainLayout->addWidget(progressBar);
 
-    // 🔹 Скроллируемая область для чекбоксов
+
     scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
     mainLayout->addWidget(scrollArea);
 
-    // Внутренний виджет для чекбоксов
+
     QWidget *scrollWidget = new QWidget(this);
     LayoutCheckBox = new QVBoxLayout(scrollWidget);
     scrollWidget->setLayout(LayoutCheckBox);
 
     scrollArea->setWidget(scrollWidget);
 
-    // Кнопки
     QHBoxLayout *btnLayout = new QHBoxLayout();
     QPushButton *saveBtn   = new QPushButton(tr("Save"), this);
     QPushButton *closeBtn  = new QPushButton(tr("Close"), this);
@@ -78,7 +76,31 @@ TaskInfoWindow::TaskInfoWindow(QWidget *parent,const Task &task)
     btnLayout->addWidget(saveBtn);
     btnLayout->addWidget(closeBtn);
     mainLayout->addLayout(btnLayout);
+    connect(saveBtn,   &QPushButton::clicked, this, &TaskInfoWindow::onButtonSave );
 }
+
+void TaskInfoWindow::onButtonSave()
+{
+    QJsonArray tasksArray;
+    for (QCheckBox *cb : subtaskCheckboxes) {
+        QJsonObject t;
+        t["text"] = cb->text();
+        t["done"] = cb->isChecked();
+        tasksArray.append(t);
+    }
+
+    QJsonObject descriptionObj;
+    descriptionObj["main"] = descriptionEdit->toPlainText();
+
+    descriptionObj["tasks"] = tasksArray;
+
+    QString descriptionJson = QString::fromUtf8(
+        QJsonDocument(descriptionObj).toJson(QJsonDocument::Compact)
+        );
+
+    emit taskUpdated(m_task, descriptionJson);
+}
+
 
 void TaskInfoWindow::setDescription(const QString &desc)
 {
@@ -115,16 +137,13 @@ void TaskInfoWindow::setDescription(const QString &desc)
 
         QCheckBox* checkBox = new QCheckBox(this);
         checkBox->setText(t.value("text").toString());
+        checkBox->setChecked(t.value("done").toBool());
         LayoutCheckBox->addWidget(checkBox);
         subtaskCheckboxes.append(checkBox);
         connect(checkBox, &QCheckBox::stateChanged, this, [this](){
             updateProgress();
         });
     }
-
-    // 3. Формируем вывод
-
-    // 4. Показываем в QTextEdit
     updateProgress();
     descriptionEdit->setText(mainText);
 }

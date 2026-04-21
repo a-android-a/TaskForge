@@ -33,7 +33,10 @@ private:
     QVector<QCheckBox*> subtaskCheckboxes;
 
     void updateProgress();
-
+private slots:
+    void onButtonSave();
+signals:
+    void taskUpdated(const Task &task, const QString &descriptionJson);
 
 public:
     explicit TaskInfoWindow(QWidget *parent = nullptr, const Task &task=  Task());
