@@ -129,6 +129,24 @@ bool TaskDatabaseManager::updateStatus(const long long id, const long long newSt
 
     return query.numRowsAffected() > 0;
 }
+bool TaskDatabaseManager::updateTaskDescription(qint64 id, const QString &des)
+{
+    QSqlQuery query(m_db);
+
+    query.prepare("UPDATE Task SET description = :description WHERE id = :id");
+    query.bindValue(":description", des);
+    query.bindValue(":id", id);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to update task description:" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+
+
 QString TaskDatabaseManager::getDescription(const qint64 id){
     QSqlQuery query(m_db);
     query.prepare("SELECT description FROM Task WHERE id = :id");
