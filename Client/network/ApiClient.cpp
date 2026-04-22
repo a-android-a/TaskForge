@@ -40,6 +40,11 @@ void ApiClient::authenticate(const QString &login, const QString password){
 }
 void ApiClient::connectToServer()
 {
+
+
+    if (this->state() != QAbstractSocket::UnconnectedState) {
+        this->abort();
+    }
     Config::instance().setSettingsFile("config.json");
 
     qInfo()<< Config::instance().getServerHost();
