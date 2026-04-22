@@ -88,6 +88,7 @@ void MainWindowAdmin::setupUserControls()
 
     connect(m_btnCreateUser,       &QPushButton::clicked, this, &MainWindowAdmin::onBtnCreateUser  );
     connect(m_btnBanUserUnbanUser, &QPushButton::clicked, this, &MainWindowAdmin::onBtnBanUnbanUser);
+    connect(m_pLogoutButton,       &QPushButton::clicked, this, &MainWindowAdmin::onLogoutClicked  );
 
 
 
@@ -110,6 +111,11 @@ void MainWindowAdmin::onBtnBanUnbanUser(){
 
 
 
+
+}
+void MainWindowAdmin::onLogoutClicked(){
+    emit ButtonLogOut();
+    this->close();
 
 }
 void MainWindowAdmin::onBanClicked(int userId){

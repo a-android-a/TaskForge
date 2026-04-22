@@ -52,6 +52,9 @@ private slots:
     // void onBtnEditTask();
     void onBtnTaskList();
     void onUserCreated(const User& user);
+    void onLogoutClicked();
+signals:
+    void ButtonLogOut();
 public:
 
     explicit MainWindowAdmin( QWidget* parent = nullptr);

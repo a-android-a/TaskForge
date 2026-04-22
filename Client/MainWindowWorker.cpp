@@ -74,6 +74,7 @@ MainWindowWorker::MainWindowWorker(QWidget *parent) : QWidget(parent)
 
 
 }
+
 void MainWindowWorker::onTaskUpdated(const Task &task, const QString &descriptionJson){
     m_apiClient->updateTaskDescription(task.id, descriptionJson);
 
@@ -82,7 +83,8 @@ void MainWindowWorker::onTaskUpdated(const Task &task, const QString &descriptio
 }
 
 void MainWindowWorker::onLogoutClicked(){
-
+    emit ButtonLogOut();
+    this->close();
 }
 void MainWindowWorker::onCardClicked(int taskId)
 {

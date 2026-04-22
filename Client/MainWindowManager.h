@@ -13,6 +13,7 @@ private:
     QVBoxLayout* m_pVbox;
     QPushButton* m_AddTask;
     QPushButton* m_AddChekBox;
+    QPushButton* m_TaskList;
     QLineEdit*   m_pTaskName;
     QLineEdit*   m_pDueDate;
     QLineEdit*   m_pCreatedBy;
@@ -26,6 +27,10 @@ private:
 private slots:
     void onButtonAddTask();
     void onButtonAddChekBox();
+    void onLogoutClicked();
+    void onButtonTaskList();
+signals:
+    void ButtonLogOut();
 public:
     explicit MainWindowManager(QWidget *parent = nullptr);
     void setApiClient(ApiClient* apiClient);

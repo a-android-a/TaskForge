@@ -38,6 +38,8 @@ private slots:
     void onCardClicked(const int taskId);
     void onDescriptionList(const QString& des);
     void onTaskUpdated(const Task &task, const QString &descriptionJson);
+signals:
+    void ButtonLogOut();
 public:
     explicit MainWindowWorker(QWidget *parent = nullptr);
     void setApiClient(ApiClient* apiClient);

@@ -1,5 +1,6 @@
 #include "MainWindowManager.h"
 #include "network/ApiClient.h"
+#include "MainWindowWorker.h"
 #include "../Server/Task.h"
 #include <QWidget>
 #include <QPushButton>
@@ -13,6 +14,7 @@ MainWindowManager::MainWindowManager(QWidget *parent) : QWidget(parent){
     m_pVbox        = new QVBoxLayout(this);
     m_AddTask      = new QPushButton(tr("SaveTask"),this);
     m_AddChekBox   = new QPushButton(tr("addTask"),this);
+    m_TaskList     = new QPushButton(tr("task list"));
     m_pTaskName    = new QLineEdit(this);
     m_pDueDate     = new QLineEdit(this);
     m_pCreatedBy   = new QLineEdit(this);
@@ -49,12 +51,16 @@ MainWindowManager::MainWindowManager(QWidget *parent) : QWidget(parent){
     cardLayout->addWidget(m_pDescription);
     cardLayout->addWidget(m_pPriority);
     cardLayout->addWidget(m_AddTask);
+    cardLayout->addWidget(m_TaskList);
     cardLayout->addWidget(m_AddChekBox);
 
 
     m_pVbox->addWidget(card);
     connect(m_AddChekBox, &QPushButton::clicked, this, &MainWindowManager::onButtonAddChekBox);
     connect(m_AddTask,    &QPushButton::clicked, this, &MainWindowManager::onButtonAddTask   );
+    connect(m_TaskList,   &QPushButton::clicked, this, &MainWindowManager::onButtonTaskList  );
+
+
     m_scrollArea = new QScrollArea(this);
     m_scrollArea->setWidgetResizable(true);
     m_scrollArea->setObjectName("taskScrollArea");
@@ -80,7 +86,16 @@ void MainWindowManager::onButtonAddChekBox(){
     box->setObjectName("taskCheckbox");
     m_checkBoxLayout->addWidget(box);
 }
-
+void MainWindowManager::onLogoutClicked(){
+    emit ButtonLogOut();
+    this->close();
+}
+void MainWindowManager::onButtonTaskList(){
+    MainWindowWorker* w = new MainWindowWorker(nullptr);
+    w->setStyle("style/stylesMainWindowWorkerLight.qss");
+    w->setApiClient(m_apiClient);
+    w->show();
+}
 void MainWindowManager::onButtonAddTask()
 {
     if(!m_pTaskName->text().isEmpty() && !m_pDueDate->text().isEmpty() && !m_pCreatedBy->text().isEmpty() && !m_pAssignedTo->text().isEmpty() && !m_pPriority->text().isEmpty()){
