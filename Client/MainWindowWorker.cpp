@@ -43,9 +43,17 @@ MainWindowWorker::MainWindowWorker(QWidget *parent) : QWidget(parent)
 
 
     m_pLogoutButton = new QPushButton(tr("log out"), topBar);
+    m_pReconnect    = new QPushButton(tr("Reconnect"));
+
     m_pLogoutButton->setObjectName("logoutButton");
+    m_pReconnect->setObjectName("reconnectButton");
+
     m_pLogoutButton->setCursor(Qt::PointingHandCursor);
-    connect(m_pLogoutButton, &QPushButton::clicked, this, &MainWindowWorker::onLogoutClicked);
+
+    connect(m_pLogoutButton, &QPushButton::clicked, this, &MainWindowWorker::onLogoutClicked  );
+    connect(m_pReconnect,    &QPushButton::clicked, this, &MainWindowWorker::onButtonReconnect);
+
+    topLayout->addWidget(m_pReconnect);
     topLayout->addWidget(m_pLogoutButton);
 
     mainVertical->addWidget(topBar);
@@ -73,6 +81,9 @@ MainWindowWorker::MainWindowWorker(QWidget *parent) : QWidget(parent)
 
 
 
+}
+void MainWindowWorker::onButtonReconnect(){
+    m_apiClient->connectToServer();
 }
 
 void MainWindowWorker::onTaskUpdated(const Task &task, const QString &descriptionJson){
@@ -129,12 +140,23 @@ void MainWindowWorker::setApiClient(ApiClient* apiClient){
         //connect(m_apiClient, &ApiClient::tasksReceived,this,        &MainWindowWorker::onTasksReceived);
         connect(m_apiClient, &ApiClient::tasksReceived          ,this, &MainWindowWorker::onTasksReceived,Qt::QueuedConnection);
         connect(m_apiClient, &ApiClient::descriptionListReceived,this, &MainWindowWorker::onDescriptionList);
+        connect(m_apiClient, &ApiClient::ConnectionError,        this, &MainWindowWorker::onConnectionError);
+        connect(m_apiClient, &ApiClient::ConnectionOk,           this, &MainWindowWorker::onConnectionOk   );
 
         m_apiClient->getAllTasks();
         connectionStatus->setText(tr("Connected"));
         connectionStatus->setStyleSheet(" color: #3CF527;  font-weight: bold; font-size: 13px;");
     }
 
+}
+void MainWindowWorker::onConnectionOk(){
+    connectionStatus->setText(tr("Connected"));
+    connectionStatus->setStyleSheet(" color: #3CF527;  font-weight: bold; font-size: 13px;");
+}
+
+void MainWindowWorker::onConnectionError(){
+    connectionStatus->setText(tr("Connection error"));
+    connectionStatus->setStyleSheet(" color: #F03713;  font-weight: bold; font-size: 13px;");
 }
 void MainWindowWorker::onDescriptionList(const QString& des){
     qInfo()<<des;

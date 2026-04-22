@@ -26,6 +26,7 @@ private:
     TaskColumn*  inProgress;
     TaskColumn*  doneColumn;
     QPushButton* m_pLogoutButton;
+    QPushButton* m_pReconnect;
     QLabel*      connectionStatus;
     QVector<Task>tasks;
     User user;
@@ -38,6 +39,9 @@ private slots:
     void onCardClicked(const int taskId);
     void onDescriptionList(const QString& des);
     void onTaskUpdated(const Task &task, const QString &descriptionJson);
+    void onButtonReconnect();
+    void onConnectionError();
+    void onConnectionOk();
 signals:
     void ButtonLogOut();
 public:
