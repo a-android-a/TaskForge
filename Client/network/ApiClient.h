@@ -39,6 +39,8 @@ signals:
     void createManagerWindow(const User& user);
     void usersListReceived(const QList<User>& user);
     void descriptionListReceived(const QString& des);
+    void ConnectionError();
+    void ConnectionOk();
 private slots:
     void slotReadyRead();
 

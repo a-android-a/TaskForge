@@ -75,10 +75,12 @@ void ApiClient::connectToServer()
     connect(this, &QAbstractSocket::errorOccurred, this, [this](QAbstractSocket::SocketError err) {
         QString errMsg = tr("Failed to connect to server:\n%1").arg(this->errorString());
         QMessageBox::warning(nullptr, tr("Connection Error"), errMsg);
+        emit ConnectionError();
     });
 
 
     this->connectToHostEncrypted(Config::instance().getServerHost(), 4433);
+    emit ConnectionOk();
 
 }
 void ApiClient::sendToServer(const QString &data)
