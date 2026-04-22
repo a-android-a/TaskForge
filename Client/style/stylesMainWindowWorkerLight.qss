@@ -1,22 +1,22 @@
+/* ============================
+   TOP BAR
+   ============================ */
 #topBar {
     background: #2975C2;
 }
 
-/* User label */
 #userLabel {
     color: white;
     font-weight: bold;
     font-size: 14px;
 }
 
-/* Connection status */
-#connectionStatus {
+/*#connectionStatus {
     color: #f39c12;
     font-weight: bold;
     font-size: 13px;
 }
-
-/* Logout button */
+*/
 #logoutButton {
     background: #e74c3c;
     color: white;
@@ -25,25 +25,41 @@
     padding: 8px 16px;
     font-weight: bold;
 }
+
+
+#logoutButton:hover {
+    background: #ff6b5a;
+}
+
+#logoutButton:pressed {
+    background: #c0392b;
+}
+
 /* ============================
-   TaskColumn base style
+   TASK COLUMN
    ============================ */
+
+/* Внешний контейнер */
 #taskColumn {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+/* Основное тело колонки */
+#taskColumnBody {
     background: #f5f5f5;
     border: 1px solid #d0d0d0;
     border-radius: 8px;
 }
 
-/* Hover / drag-over state */
-#taskColumnHover {
+/* Hover / drag-over */
+#taskColumn[hover="true"] #taskColumnBody {
     background: #e8f5e9;
     border: 2px dashed #4caf50;
-    border-radius: 8px;
 }
 
-/* ============================
-   Column title
-   ============================ */
+/* Заголовок */
 #taskColumnTitle {
     font-weight: bold;
     font-size: 16px;
@@ -51,64 +67,565 @@
     background: #424242;
     padding: 12px;
     border-radius: 8px 8px 0 0;
+    text-align: center;
 }
 
-/* ============================
-   Scroll area
-   ============================ */
+/* Scroll area */
 #taskColumnScroll {
     border: none;
     background: transparent;
 }
 
-/* ============================
-   Cards container
-   ============================ */
 #taskCardsContainer {
     background: transparent;
 }
-/* ============================
-   TaskColumn base style
-   ============================ */
-#taskColumn {
-    background: #f5f5f5;
-    border: 1px solid #d0d0d0;
-    border-radius: 8px;
-}
-
-/* Hover / drag-over state */
-#taskColumnHover {
-    background: #e8f5e9;
-    border: 2px dashed #4caf50;
-    border-radius: 8px;
-}
 
 /* ============================
-   Column title
+   TASK CARD
    ============================ */
-#taskColumnTitle {
+
+#taskCard {
+    background: transparent;
+    margin: 8px 0;
+}
+
+#taskCardMain {
+    background: #ffffff;
+    border: 2px solid #dfe6e9;
+    border-radius: 12px;
+}
+
+#taskCardMain:hover {
+    border: 2px solid #3498db;
+}
+
+#taskCardTitle {
+    font-weight: 700;
+    font-size: 15px;
+    color: #2d3436;
+}
+
+#taskCardPriority {
+    font-size: 13px;
     font-weight: bold;
-    font-size: 16px;
+    padding: 4px 10px;
+    border-radius: 16px;
     color: white;
-    background: #424242;
-    padding: 12px;
-    border-radius: 8px 8px 0 0;
+    min-width: 80px;
+    text-align: center;
 }
 
-/* ============================
-   Scroll area
-   ============================ */
-#taskColumnScroll {
+#taskCardPriority[priority="1"] { background: #e74c3c; }
+#taskCardPriority[priority="2"] { background: #f39c12; }
+#taskCardPriority[priority="3"] { background: #27ae60; }
+#taskCardPriority[priority="4"] { background: #3498db; }
+#taskCardPriority[priority="5"] { background: #95a5a6; }
+
+#taskCardDue {
+    font-size: 13px;
+    color: #636e72;
+    font-style: italic;
+}
+
+#taskCardDescription {
+    font-size: 13px;
+    color: #636e72;
+    line-height: 1.5;
+}
+
+#taskCardButton {
+    background: #3498db;
+    color: white;
     border: none;
-    background: transparent;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+#taskCardButton:hover {
+    background: #2980b9;
+}
+
+#taskCardButton:pressed {
+    background: #1f6391;
 }
 
 /* ============================
-   Cards container
+   SCROLLBAR
    ============================ */
-#taskCardsContainer {
-    background: transparent;
+
+QScrollBar:vertical {
+    border: none;
+    background: #f1f2f6;
+    width: 8px;
+    border-radius: 4px;
 }
 
-/* Auth Window*/
+QScrollBar::handle:vertical {
+    background: #bdc3c7;
+    min-height: 20px;
+    border-radius: 4px;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+
+/* Main Window*/
+#authWindow {
+    background: #f7f9fc;
+    border-radius: 12px;
+}
+
+
+QLabel {
+    font-size: 14px;
+    font-weight: bold;
+    color: #2d3436;
+}
+
+
+#authLogin, #authPassword {
+    background: white;
+    border: 1px solid #dfe6e9;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+#authLogin:focus, #authPassword:focus {
+    border: 1px solid #3498db;
+   
+}
+
+
+#authButton {
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#authButton:hover {
+    background: #2980b9;
+}
+
+#authButton:pressed {
+    background: #1f6391;
+}
+
+#reconnectButton{
+    background: #6FE73C;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#reconnectButton:hover {
+    background: #27941F;
+}
+#reconnectButton:pressed {
+    background: #38941F;
+}
+
+QWidget#authWindow {
+    border: 1px solid #dcdde1;
+    border-radius: 12px;
+    padding: 20px;
+}
+/*MainWindowManager*/
+#taskFormCard {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #d0d0d0;
+    padding: 16px;
+}
+
+#taskInput {
+    background: #f5f6fa;
+    border: 1px solid #dcdde1;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 14px;
+}
+
+#taskInput:focus {
+    border: 1px solid #3498db;
+    background: #ffffff;
+}
+
+#taskDescription {
+    background: #f5f6fa;
+    border: 1px solid #dcdde1;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 14px;
+}
+
+#addTaskButton {
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#addTaskButton:hover {
+    background: #2ecc71;
+}
+
+#addCheckboxButton {
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#addCheckboxButton:hover {
+    background: #2980b9;
+}
+/* Поле подзадачи */
+#taskCheckbox {
+    background: #ffffff;
+    border: 1px solid #dfe6e9;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #2d3436;
+
+    /* Мягкая тень */
+   
+
+    /* Плавная анимация */
+   
+}
+
+/* Hover — лёгкое подсвечивание */
+#taskCheckbox:hover {
+    border: 1px solid #b2bec3;
+    
+}
+
+/* Фокус — яркая рамка и белый фон */
+#taskCheckbox:focus {
+    border: 1px solid #3498db;
+    background: #ffffff;
+   
+}
+
+
+
+/* ============================
+   ADMIN WINDOW — Light
+   ============================ */
+
+#adminWindow {
+    background: #f5f7fa;
+}
+
+/* Заголовки */
+#adminWindow QLabel {
+    color: #2d3436;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+/* Общий стиль кнопок */
+#adminWindow QPushButton {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 8px;
+    
+}
+
+/* ===== Цветные кнопки ===== */
+
+/* Создать пользователя / задачу — зелёные */
+#btnCreateUser,
+#btnCreateTask {
+    background: #27ae60;
+}
+#btnCreateUser:hover,
+#btnCreateTask:hover {
+    background: #2ecc71;
+}
+
+/* Бан / удалить — красные */
+#btnBanUser,
+#btnDeleteTask {
+    background: #e74c3c;
+}
+#btnBanUser:hover,
+#btnDeleteTask:hover {
+    background: #ff6b5a;
+}
+
+/* Разбан / редактировать — синие */
+#btnUnbanUser,
+#btnEditTask {
+    background: #ffd65a;
+}
+#btnUnbanUser:hover,
+#btnEditTask:hover {
+    background: #e8c451;
+}
+
+/* Списки — фиолетовые */
+#btnUserList,
+#btnTaskList {
+    background: #8e44ad;
+}
+#btnUserList:hover,
+#btnTaskList:hover {
+    background: #9b59b6;
+}
+
+/* Нажатие */
+#adminWindow QPushButton:pressed {
+    
+}
+
+#createUserWindow {
+    background: #f7f9fc;
+    border-radius: 12px;
+}
+
+#createUserTitle {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2d3436;
+    margin-bottom: 10px;
+}
+
+#createUserWindow QLineEdit {
+    background: white;
+    border: 1px solid #dfe6e9;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+#createUserWindow QLineEdit:focus {
+    border: 1px solid #3498db;
+}
+
+#btnCreateUser {
+    background: #27ae60;
+    color: white;
+    border-radius: 8px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+#btnCreateUser:hover {
+    background: #2ecc71;
+}
+
+#btnCancelUser {
+    background: #e74c3c;
+    color: white;
+    border-radius: 8px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+#btnCancelUser:hover {
+    background: #ff6b5a;
+}
+#btnGenerateLoginPass{
+    background: #274DF5;
+    color: white;
+    border-radius: 8px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+
+/* ====== UserManagementWindow — контейнер ====== */
+UserManagementWindow {
+    background-color: #f5f6fa;
+    border-radius: 8px;
+}
+
+/* ====== Таблица ====== */
+UserManagementWindow QTableView {
+    background: #ffffff;
+    border: 1px solid #dcdde1;
+    border-radius: 6px;
+    gridline-color: #e1e2e6;
+    selection-background-color: #4a90e2;
+    selection-color: white;
+    font-size: 14px;
+}
+
+/* Заголовки таблицы */
+UserManagementWindow QHeaderView::section {
+    background-color: #f0f0f5;
+    padding: 6px;
+    border: 1px solid #dcdde1;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+/* ====== Кнопки ====== */
+UserManagementWindow QPushButton {
+    background-color: #4a90e2;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+}
+
+UserManagementWindow QPushButton:hover {
+    background-color: #6aa8f0;
+}
+
+UserManagementWindow QPushButton:pressed {
+    background-color: #3a78c2;
+}
+
+/* Кнопка "Разблокировать" — зелёная */
+UserManagementWindow QPushButton#unbanButton {
+    background-color: #2ecc71;
+}
+
+UserManagementWindow QPushButton#unbanButton:hover {
+    background-color: #48d688;
+}
+
+UserManagementWindow QPushButton#unbanButton:pressed {
+    background-color: #27ae60;
+}
+
+/* Кнопка "Обновить" — серая */
+UserManagementWindow QPushButton#refreshButton {
+    background-color: #7f8c8d;
+}
+
+UsersDialog QPushButton#refreshButton:hover {
+    background-color: #95a5a6;
+}
+
+UserManagementWindow QPushButton#refreshButton:pressed {
+    background-color: #707b7c;
+}
+/* ============================
+   TASK INFO WINDOW
+   ============================ */
+
+/* Само окно информации о задаче */
+TaskInfoWindow {
+    background: #f7f9fc;
+    border-radius: 12px;
+}
+
+/* Заголовки внутри окна задачи */
+TaskInfoWindow QLabel {
+    font-size: 14px;
+    font-weight: bold;
+    color: #2d3436;
+}
+
+/* Поле описания */
+TaskInfoWindow QTextEdit {
+    background: #ffffff;
+    border: 1px solid #dfe6e9;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 13px;
+    color: #2d3436;
+}
+
+TaskInfoWindow QTextEdit:read-only {
+    background: #f8f9fb;
+}
+
+/* Скролл для подзадач */
+TaskInfoWindow QScrollArea {
+    border: 1px solid #dfe6e9;
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+/* Чекбоксы подзадач */
+TaskInfoWindow QCheckBox {
+    background: transparent;
+    padding: 6px 4px;
+    font-size: 13px;
+    color: #2d3436;
+}
+
+TaskInfoWindow QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid #b2bec3;
+    background: #ffffff;
+}
+
+TaskInfoWindow QCheckBox::indicator:checked {
+    background: #27ae60;
+    border: 1px solid #27ae60;
+}
+
+/* Прогресс-бар */
+TaskInfoWindow QProgressBar {
+    border: 1px solid #dfe6e9;
+    border-radius: 8px;
+    background: #ecf0f1;
+    text-align: center;
+    font-size: 12px;
+    color: #2d3436;
+}
+
+TaskInfoWindow QProgressBar::chunk {
+    border-radius: 8px;
+    background-color: #27ae60;
+}
+
+/* Кнопки Save / Close */
+TaskInfoWindow QPushButton {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+}
+
+TaskInfoWindow QPushButton#saveButton {
+    background: #27ae60;
+}
+
+TaskInfoWindow QPushButton#saveButton:hover {
+    background: #2ecc71;
+}
+
+TaskInfoWindow QPushButton#closeButton {
+    background: #e74c3c;
+}
+
+TaskInfoWindow QPushButton#closeButton:hover {
+    background: #ff6b5a;
+}
 
