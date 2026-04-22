@@ -41,6 +41,7 @@ UserAuthWindow::UserAuthWindow(ApiClient* apiClient, QWidget *parent)
     connect(m_apiClient, &ApiClient::createWorkerWindow,    this,&UserAuthWindow::slotCreateWorkerWindow );
     connect(m_apiClient, &ApiClient::createAdminWindow,     this,&UserAuthWindow::slotCreateAdminWindow  );
     connect(m_apiClient, &ApiClient::createManagerWindow,   this,&UserAuthWindow::slotCreateManagerWindow);
+    connect(m_pReconnect,&QPushButton::clicked,             this,&UserAuthWindow::slotButtonReconnect    );
     m_apiClient->connectToServer();
     m_pLogin->setObjectName("authLogin");
     m_pPassword->setObjectName("authPassword");
@@ -62,7 +63,9 @@ bool UserAuthWindow::setStyle(const QString &styleFileName){
     }
     return false;
 }
-
+void UserAuthWindow::slotButtonReconnect(){
+    m_apiClient->connectToServer();
+}
 void UserAuthWindow::slotButton(){
 
     QString login = m_pLogin->text().trimmed();
@@ -86,6 +89,9 @@ QString UserAuthWindow::hashString(const QString &str){
     QString hashHex = hash.toHex();
     return hashHex;
 }
+void UserAuthWindow::ShowWindow(){
+    this->show();
+}
 void UserAuthWindow::slotAuthorizationOk(){
 
 }
@@ -97,6 +103,7 @@ void UserAuthWindow::slotCreateAdminWindow(const User& user){
     w->setStyle("style/stylesMainWindowWorkerLight.qss");
     this->hide();
     w->show();
+    connect(w, &MainWindowAdmin::ButtonLogOut,   this,&UserAuthWindow::ShowWindow);
 }
 void UserAuthWindow::slotCreateManagerWindow(const User& user){
     MainWindowManager* w = new MainWindowManager(nullptr);
@@ -104,6 +111,7 @@ void UserAuthWindow::slotCreateManagerWindow(const User& user){
     w->setStyle("style/stylesMainWindowWorkerLight.qss");
     this->hide();
     w->show();
+    connect(w, &MainWindowManager::ButtonLogOut,   this,&UserAuthWindow::ShowWindow);
 }
 void UserAuthWindow::slotCreateWorkerWindow(const User& user){
     MainWindowWorker* w = new MainWindowWorker(nullptr);
@@ -112,9 +120,6 @@ void UserAuthWindow::slotCreateWorkerWindow(const User& user){
     w->setUser(user);
     this->hide();
     w->show();
-
-
-
-
+    connect(w, &MainWindowWorker::ButtonLogOut,   this,&UserAuthWindow::ShowWindow);
 }
 

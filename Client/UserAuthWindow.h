@@ -26,10 +26,12 @@ public:
 
 private slots:
     void slotButton();
+    void slotButtonReconnect();
     void slotAuthorizationFailed();
     void slotAuthorizationOk();
     void slotCreateWorkerWindow (const User &user);
     void slotCreateAdminWindow  (const User &user);
     void slotCreateManagerWindow(const User &user);
+    void ShowWindow();
 
 };
