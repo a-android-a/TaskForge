@@ -30,13 +30,14 @@ MainWindowManager::MainWindowManager(QWidget *parent) : QWidget(parent){
     m_pPriority->setObjectName("taskPriority");
     m_AddTask->setObjectName("addTaskButton");
     m_AddChekBox->setObjectName("addCheckboxButton");
-
+    m_TaskList->setObjectName("btnTaskList");
     m_pTaskName->setPlaceholderText("Task name");
     m_pDueDate->setPlaceholderText("Due date (YYYY-MM-DD)");
     m_pCreatedBy->setPlaceholderText("Created by");
     m_pAssignedTo->setPlaceholderText("Assigned to");
     m_pDescription->setPlaceholderText("Description");
     m_pPriority->setPlaceholderText("Task priority");
+
 
     QWidget* card = new QWidget(this);
     card->setObjectName("taskFormCard");
