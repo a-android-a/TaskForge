@@ -357,6 +357,21 @@ void SslServer::onReadyRead()
             jsonData += '\n';
             socket->write(jsonData);
         }
+        else if (type == "deleteTask") {
+            qint64  id  = jsonObj["id"].toInt();
+
+            QJsonObject messageObj;
+            messageObj["type"] = "deleteTask_response";
+            if(tasksDB.deleteTask(id)){
+                messageObj["status"] = "ok";
+            }else  {
+                messageObj["status"] = "error";
+            }
+            QJsonDocument doc(messageObj);
+            QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+            jsonData += '\n';
+            socket->write(jsonData);
+        }
 
     }
 }
