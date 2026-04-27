@@ -46,6 +46,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         WindowCreateUser.cpp
         UserManagementWindow.h
         UserManagementWindow.cpp
+        TaskEditWindow.h
+        TaskEditWindow.cpp
 
 
     )
