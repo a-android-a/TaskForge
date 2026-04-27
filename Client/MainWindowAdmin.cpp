@@ -3,6 +3,7 @@
 #include "UserManagementWindow.h"
 #include "MainWindowManager.h"
 #include "MainWindowWorker.h"
+#include "TaskEditWindow.h"
 #include "../Server/User.h"
 #include "../Server/Task.h"
 
@@ -10,6 +11,8 @@
 #include <QString>
 #include <QFile>
 #include <QLabel>
+#include <QJsonArray>
+#include <QJsonObject>
 MainWindowAdmin::MainWindowAdmin(QWidget* parent)
 {
     setupUI();
@@ -24,7 +27,7 @@ MainWindowAdmin::MainWindowAdmin(QWidget* parent)
 
 void MainWindowAdmin::setupUI()
 {
-   // m_centralWidget = new QWidget(this);
+    // m_centralWidget = new QWidget(this);
     m_mainLayout = new QVBoxLayout(this);
 
     QWidget *topBar = new QWidget(this);
@@ -58,6 +61,7 @@ void MainWindowAdmin::setupUI()
     setupTaskControls();
 
     m_mainLayout->addStretch();
+
 
 }
 
@@ -103,8 +107,9 @@ void MainWindowAdmin::onBtnBanUnbanUser(){
     w->show();
 
     m_apiClient->getAllUsers();
+//descriptionListReceived(const QString& des);
+    connect(m_apiClient, &ApiClient::usersListReceived, w,        &UserManagementWindow::setUsers);
 
-    connect(m_apiClient, &ApiClient::usersListReceived, w, &UserManagementWindow::setUsers);
     connect(w, &UserManagementWindow::banUserRequested,this,      &MainWindowAdmin::onBanClicked);
     connect(w, &UserManagementWindow::unbanUserRequested,this,    &MainWindowAdmin::onUnbanClicked);
     connect(w, &UserManagementWindow::refreshRequested,this,      &MainWindowAdmin::onRefreshClicked);
@@ -112,6 +117,51 @@ void MainWindowAdmin::onBtnBanUnbanUser(){
 
 
 
+
+}
+void MainWindowAdmin::onTasksReceived(const QJsonArray &tasksArray){
+    tasks.clear();
+    qInfo()<<"tasksArray: "<<tasksArray.size();
+    for (const QJsonValue &val : tasksArray) {
+        QJsonObject obj = val.toObject();
+
+        Task t;
+        t.id          = obj["id"].toInt();
+        t.status      = obj["status"].toInt();
+        t.priority    = obj["priority"].toInt();
+        t.taskName    = obj["taskName"].toString();
+        //t.description = obj["description"].toString();
+        t.due_date    = obj["due_date"].toString();
+        t.created_by  = obj["created_by"].toString();
+        t.assigned_to = obj["assigned_to"].toString();
+
+        // qInfo() << "ID:" << obj["id"].toInt();
+        // qInfo() << "Name:" << t.taskName;
+        // qInfo() << "Desc:" << t.description;
+        // qInfo() << "Due:" << t.due_date;
+        // qInfo() << "Priority:" << t.priority;
+        // qInfo() << "Status:" << t.status;
+        tasks.append(t);
+    }
+}
+void MainWindowAdmin::onBtnEditTask()
+{
+
+    if(m_apiClient != nullptr) m_apiClient->getAllTasks();
+    w = new TaskEditWindow(nullptr,Task());
+    w->setStyle("style/stylesMainWindowWorkerLight.qss");
+    w->setTasks(tasks);
+
+    w->show();
+    qInfo()<<tasks.size();
+    connect(w, &TaskEditWindow::getDescrition,this,      &MainWindowAdmin::onGetDescrition);
+    connect(w, &TaskEditWindow::saveTask,this,           &MainWindowAdmin::onSaveTask);
+}
+void MainWindowAdmin::onGetDescrition(const qint64 id){
+    m_apiClient->getDescription(id);
+}
+void MainWindowAdmin::onSaveTask(const qint64 id, const QString& json){
+    m_apiClient->saveTask(id,json);
 }
 void MainWindowAdmin::onLogoutClicked(){
     emit ButtonLogOut();
@@ -168,14 +218,12 @@ void MainWindowAdmin::setupTaskControls()
 
 
     connect(m_btnCreateTask,   &QPushButton::clicked, this, &MainWindowAdmin::onBtnCreateTask );
+    connect(m_btnEditTask,     &QPushButton::clicked, this, &MainWindowAdmin::onBtnEditTask   );
 
     connect(m_btnDeleteTask, &QPushButton::clicked, [](){
         qInfo() << "Delete task clicked";
     });
 
-    connect(m_btnEditTask, &QPushButton::clicked, [](){
-        qInfo() << "Edit task clicked";
-    });
 
     connect(m_btnTaskList,   &QPushButton::clicked, this, &MainWindowAdmin::onBtnTaskList );
 }
@@ -200,6 +248,13 @@ void MainWindowAdmin::onBtnCreateUser(){
 void MainWindowAdmin::setApiClient(ApiClient* apiClient)
 {
     m_apiClient = apiClient;
+    m_apiClient->getAllTasks();
+    connect(m_apiClient, &ApiClient::tasksReceived     ,this,     &MainWindowAdmin::onTasksReceived);
+    connect(m_apiClient, &ApiClient::descriptionListReceived, this,  &MainWindowAdmin::onDescriptionListReceived);
+}
+void MainWindowAdmin::onDescriptionListReceived(const QString& str){
+    des = str;
+    w->setDescription(des);
 }
 void MainWindowAdmin::onUserCreated(const User& user){
     qInfo() << "onUserCreated";
