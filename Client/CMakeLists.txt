@@ -36,8 +36,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         TaskCard.cpp
         TaskInfoWindow.cpp
         TaskInfoWindow.h
-        TaskCreationWindow.cpp
-        TaskCreationWindow.h
         MainWindowAdmin.h
         MainWindowAdmin.cpp
         MainWindowManager.h
@@ -48,6 +46,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         UserManagementWindow.cpp
         TaskEditWindow.h
         TaskEditWindow.cpp
+        TaskDeletedWindow.h
+        TaskDeletedWindow.cpp
 
 
     )
