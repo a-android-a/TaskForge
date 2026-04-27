@@ -340,6 +340,24 @@ void SslServer::onReadyRead()
             socket->write(jsonData);
         }
 
+        else if (type == "saveTask") {
+            qint64  id  = jsonObj["id"].toInt();
+            QString des = jsonObj["description"].toString();
+            qInfo() << "ID: " << id<< " Des: "<<des;
+
+            QJsonObject messageObj;
+            messageObj["type"] = "saveTask_response";
+            if(tasksDB.updateTaskDescription(id,des)){
+                messageObj["status"] = "ok";
+            }else  {
+                messageObj["status"] = "error";
+            }
+            QJsonDocument doc(messageObj);
+            QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+            jsonData += '\n';
+            socket->write(jsonData);
+        }
+
     }
 }
 
