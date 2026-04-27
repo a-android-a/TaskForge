@@ -11,7 +11,7 @@ class QProgressBar;
 class QScrollArea;
 
 class TaskInfoWindow:public QWidget{
-    Q_OBJECT;
+    Q_OBJECT
 private:
     QVBoxLayout* VBox;
     Task m_task;
