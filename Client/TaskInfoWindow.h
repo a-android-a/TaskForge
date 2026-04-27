@@ -41,6 +41,7 @@ signals:
 public:
     explicit TaskInfoWindow(QWidget *parent = nullptr, const Task &task=  Task());
     void setDescription(const QString &desc);
+
     bool setStyle(const QString &styleFileName);
 
 };
