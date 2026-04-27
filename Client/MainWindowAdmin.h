@@ -59,6 +59,8 @@ private slots:
     void onGetDescrition(const qint64 id);
     void onDescriptionListReceived(const QString& str);
     void onSaveTask(const qint64 id, const QString& json);
+    void onButtonDeletedTask();
+    void onDeleteTask(const qint64 id);
 signals:
     void ButtonLogOut();
 public:

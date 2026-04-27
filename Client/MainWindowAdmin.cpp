@@ -4,6 +4,7 @@
 #include "MainWindowManager.h"
 #include "MainWindowWorker.h"
 #include "TaskEditWindow.h"
+#include "TaskDeletedWindow.h"
 #include "../Server/User.h"
 #include "../Server/Task.h"
 
@@ -88,7 +89,7 @@ void MainWindowAdmin::setupUserControls()
 
     m_mainLayout->addLayout(layoutUsers);
 
-    // Заглушки
+
 
     connect(m_btnCreateUser,       &QPushButton::clicked, this, &MainWindowAdmin::onBtnCreateUser  );
     connect(m_btnBanUserUnbanUser, &QPushButton::clicked, this, &MainWindowAdmin::onBtnBanUnbanUser);
@@ -219,15 +220,22 @@ void MainWindowAdmin::setupTaskControls()
 
     connect(m_btnCreateTask,   &QPushButton::clicked, this, &MainWindowAdmin::onBtnCreateTask );
     connect(m_btnEditTask,     &QPushButton::clicked, this, &MainWindowAdmin::onBtnEditTask   );
+    connect(m_btnDeleteTask,  &QPushButton::clicked, this, &MainWindowAdmin::onButtonDeletedTask);
 
-    connect(m_btnDeleteTask, &QPushButton::clicked, [](){
-        qInfo() << "Delete task clicked";
-    });
 
 
     connect(m_btnTaskList,   &QPushButton::clicked, this, &MainWindowAdmin::onBtnTaskList );
 }
-
+void MainWindowAdmin::onButtonDeletedTask(){
+    TaskDeletedWindow* w = new TaskDeletedWindow(nullptr);
+    w->setTasks(tasks);
+    w->setStyle("style/stylesMainWindowWorkerLight.qss");
+    w->show();
+    connect(w, &TaskDeletedWindow::deleteTask,this,           &MainWindowAdmin::onDeleteTask);
+}
+void MainWindowAdmin::onDeleteTask(const qint64 id){
+    m_apiClient->deleteTask(id);
+}
 bool MainWindowAdmin::setStyle(const QString &styleFileName){
 
     QFile file(styleFileName);
