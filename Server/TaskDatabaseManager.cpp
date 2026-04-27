@@ -163,3 +163,24 @@ QString TaskDatabaseManager::getDescription(const qint64 id){
 
     return QString(); // если нет записи
 }
+
+bool TaskDatabaseManager::saveTask(const qint64 id, const QString& des)
+{
+    if (!m_db.isOpen()) {
+        qWarning() << "Database is not open!";
+        return false;
+    }
+
+    QSqlQuery query(m_db);
+    query.prepare("UPDATE tasks SET description = :des WHERE id = :id");
+    query.bindValue(":des", des);
+    query.bindValue(":id", id);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to save task description:" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+

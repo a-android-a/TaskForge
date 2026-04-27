@@ -14,5 +14,6 @@ public:
     bool updateStatus(const long long id , const long long newStatus);
     bool updateTaskDescription(const qint64 id, const QString& des);
     QString getDescription(const qint64 id);
+    bool saveTask(const qint64 id, const QString& des);
 
 };
