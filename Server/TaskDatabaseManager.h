@@ -15,5 +15,6 @@ public:
     bool updateTaskDescription(const qint64 id, const QString& des);
     QString getDescription(const qint64 id);
     bool saveTask(const qint64 id, const QString& des);
+    bool deleteTask(const qint64 id);
 
 };

@@ -184,3 +184,25 @@ bool TaskDatabaseManager::saveTask(const qint64 id, const QString& des)
     return true;
 }
 
+
+bool TaskDatabaseManager::deleteTask(const qint64 id)
+{
+    if (!m_db.isOpen()) {
+        qWarning() << "Database is not open!";
+        return false;
+    }
+
+    QSqlQuery query(m_db);
+    query.prepare("DELETE FROM task WHERE id = :id");
+    query.bindValue(":id", id);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to delete task:" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+
+
