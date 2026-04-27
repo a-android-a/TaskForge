@@ -31,6 +31,7 @@ public:
     void getDescription(const qint64 TaskID);
     void updateTaskDescription(const qint64 id, const QString &descriptionJson );
     void saveTask(const qint64 id, const QString &json);
+    void deleteTask(const qint64 id);
 signals:
     void authorizationFailed();
     void authorizationOk();

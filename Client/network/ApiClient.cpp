@@ -307,4 +307,14 @@ void ApiClient::saveTask(const qint64 id,const QString& json ){
     jsonData += '\n';
     this->write(jsonData);
 }
+void ApiClient::deleteTask(const qint64 id){
+    QJsonObject messageObj;
+    messageObj["type"] = "deleteTask";
+    messageObj["id"] = id;
+    messageObj["time"] =  QTime::currentTime().toString("hh:mm:ss");
+    QJsonDocument doc(messageObj);
+    QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+    jsonData += '\n';
+    this->write(jsonData);
+}
 
