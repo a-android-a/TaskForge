@@ -237,18 +237,18 @@ void TaskEditWindow::setDescription(const QString &des)
 }
 void TaskEditWindow::onButtonSave()
 {
-    // === 1. Собираем основное описание ===
+
     QString mainText = descriptionEdit->toPlainText();
 
-    // === 2. Собираем подзадачи ===
+
     QJsonArray subtasksArray;
 
-    // Проходим по layout подзадач
+
     for (int i = 0; i < subtasksLayout->count(); ++i) {
         QWidget *row = subtasksLayout->itemAt(i)->widget();
         if (!row) continue;
 
-        // Ищем чекбокс внутри строки
+
         QCheckBox *cb = row->findChild<QCheckBox*>();
         if (!cb) continue;
 
@@ -259,7 +259,7 @@ void TaskEditWindow::onButtonSave()
         subtasksArray.append(sub);
     }
 
-    // === 3. Собираем итоговый JSON ===
+
     QJsonObject root;
     root["main"] = mainText;
     root["tasks"] = subtasksArray;
@@ -267,7 +267,7 @@ void TaskEditWindow::onButtonSave()
     QJsonDocument doc(root);
     QString jsonString = doc.toJson(QJsonDocument::Compact);
 
-    // === 4. Вызываем API ===
+
     emit saveTask(m_task.id, jsonString);
 
     qInfo()<<jsonString;
