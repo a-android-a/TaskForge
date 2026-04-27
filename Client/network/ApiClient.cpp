@@ -149,7 +149,7 @@ void ApiClient::slotReadyRead(){
         if (status == "ok") {
             QJsonArray tasksArray = obj["tasks"].toArray();
 
-            qInfo() << "tasks size:" << tasksArray.size();
+            //qInfo() << "tasks size:" << tasksArray.size();
 
 
             emit tasksReceived(tasksArray);
@@ -296,3 +296,15 @@ void ApiClient::updateTaskDescription(const qint64 id, const QString& descriptio
     jsonData += '\n';
     this->write(jsonData);
 }
+void ApiClient::saveTask(const qint64 id,const QString& json ){
+    QJsonObject messageObj;
+    messageObj["type"] = "saveTask";
+    messageObj["id"] = id;
+    messageObj["description"] = json;
+    messageObj["time"] =  QTime::currentTime().toString("hh:mm:ss");
+    QJsonDocument doc(messageObj);
+    QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+    jsonData += '\n';
+    this->write(jsonData);
+}
+
