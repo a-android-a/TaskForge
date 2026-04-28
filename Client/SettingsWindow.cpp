@@ -8,6 +8,8 @@
 #include <QPushButton>
 #include <QDebug>
 #include <QFile>
+#include <QFileDialog>
+#include <QCoreApplication>
 
 SettingsWindow::SettingsWindow(QWidget *parent)
     : QWidget(parent)
@@ -24,6 +26,12 @@ SettingsWindow::SettingsWindow(QWidget *parent)
     portEdit = new QLineEdit(this);
     certEdit = new QLineEdit(this);
 
+    styleEdit = new QLineEdit(this);
+    styleEdit->setObjectName("SettingsStylePath");
+
+    chooseStyleBtn = new QPushButton("Выбрать файл стиля", this);
+    chooseStyleBtn->setObjectName("SettingsChooseStyleButton");
+
     themeBox = new QComboBox(this);
     themeBox->addItems({"light", "dark"});
 
@@ -38,6 +46,9 @@ SettingsWindow::SettingsWindow(QWidget *parent)
     form->addRow("Theme:", themeBox);
     form->addRow("Language:", langBox);
     form->addRow("Default user:", userEdit);
+    form->addRow("Style file:", styleEdit);
+    form->addRow("", chooseStyleBtn);
+
 
     hostEdit->setObjectName("SettingsHost");
     portEdit->setObjectName("SettingsPort");
@@ -46,6 +57,18 @@ SettingsWindow::SettingsWindow(QWidget *parent)
     userEdit->setObjectName("SettingsUser");
 
 
+    connect(chooseStyleBtn, &QPushButton::clicked, this, [this]() {
+        QString file = QFileDialog::getOpenFileName(
+            this,
+            "Выберите файл стилей",
+            QCoreApplication::applicationDirPath(),
+            "QSS Files (*.qss)"
+            );
+
+        if (!file.isEmpty()) {
+            styleEdit->setText(file);
+        }
+    });
 
 
 
@@ -72,6 +95,7 @@ void SettingsWindow::loadFromConfig()
     themeBox->setCurrentText(cfg.getTheme());
     langBox->setCurrentText(cfg.getLanguage());
     userEdit->setText(cfg.getDefaultUserName());
+    styleEdit->setText(cfg.getStylePath());
 }
 
 void SettingsWindow::onSaveClicked()

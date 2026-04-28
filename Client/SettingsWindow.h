@@ -9,14 +9,16 @@ class SettingsWindow : public QWidget {
     Q_OBJECT
 
 private:
-    QLineEdit *hostEdit;
-    QLineEdit *portEdit;
-    QLineEdit *certEdit;
-    QComboBox *themeBox;
-    QComboBox *langBox;
-    QLineEdit *userEdit;
+    QLineEdit *  hostEdit;
+    QLineEdit *  portEdit;
+    QLineEdit *  certEdit;
+    QComboBox *  themeBox;
+    QComboBox *  langBox;
+    QLineEdit *  userEdit;
+    QPushButton* saveBtn;
+    QLineEdit*   styleEdit;
+    QPushButton* chooseStyleBtn;
 
-    QPushButton *saveBtn;
 
     void loadFromConfig();
 public:
