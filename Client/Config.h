@@ -18,6 +18,7 @@ private:
     QString m_language        = "en";
     QString m_defaultUserName = "User";
     QString m_pCertificate    = "server.crt";
+    QString m_stylePath       = "style/stylesMainWindowWorkerLight.qss";
 
     QString m_filePath;
 
@@ -27,12 +28,14 @@ public:
     bool save() const;
 
     //get
-    QString getServerHost() const      { return m_serverHost; }
-    quint16 getServerPort() const      { return m_serverPort; }
-    QString getTheme() const           { return m_theme; }
-    QString getLanguage() const        { return m_language; }
+    QString getServerHost()      const { return m_serverHost;      }
+    quint16 getServerPort()      const { return m_serverPort;      }
+    QString getTheme()           const { return m_theme;           }
+    QString getLanguage()        const { return m_language;        }
     QString getDefaultUserName() const { return m_defaultUserName; }
-    QString getCertificate()     const {return m_pCertificate;}
+    QString getCertificate()     const { return m_pCertificate;    }
+    QString getStylePath()       const { return m_stylePath;       }
+
     //set
     void setServerHost(const QString& host);
     void setServerPort(quint16 port);
@@ -41,6 +44,7 @@ public:
     void setLanguage(const QString& lang);
     void setDefaultUserName(const QString& name);
     void setCertificate(const QString& cert);
+    void setStylePath(const QString& path);
 
 signals:
     void configChanged();
