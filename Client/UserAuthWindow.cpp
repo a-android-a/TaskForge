@@ -4,6 +4,7 @@
 #include "MainWindowManager.h"
 #include "MainWindowAdmin.h"
 #include "SettingsWindow.h"
+#include "Config.h"
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QLineEdit>
@@ -61,7 +62,7 @@ UserAuthWindow::UserAuthWindow(ApiClient* apiClient, QWidget *parent)
     connect(m_pReconnect,&QPushButton::clicked,             this,&UserAuthWindow::slotButtonReconnect    );
     connect(settingsBtn, &QPushButton::clicked, this, [](){
         SettingsWindow* w = new SettingsWindow();
-        w->setStyle("style/stylesMainWindowWorkerLight.qss");
+        w->setStyle(Config::instance().getStylePath());
         w->show();
     });
 
@@ -72,6 +73,7 @@ UserAuthWindow::UserAuthWindow(ApiClient* apiClient, QWidget *parent)
     m_pReconnect->setObjectName("reconnectButton");
     this->setObjectName("authWindow");
     m_pPassword->setEchoMode(QLineEdit::Password);
+
 
 
 }
@@ -123,7 +125,8 @@ void UserAuthWindow::slotCreateAdminWindow(const User& user){
     w->setApiClient(m_apiClient);
     // w->setStyle("style/stylesMainWindowWorkerLight.qss");
     //w->setUser(user);
-    w->setStyle("style/stylesMainWindowWorkerLight.qss");
+     //QString path = Config::instance().getStylePath();
+    w->setStyle(Config::instance().getStylePath());
     this->hide();
     w->show();
     connect(w, &MainWindowAdmin::ButtonLogOut,   this,&UserAuthWindow::ShowWindow);
@@ -131,7 +134,7 @@ void UserAuthWindow::slotCreateAdminWindow(const User& user){
 void UserAuthWindow::slotCreateManagerWindow(const User& user){
     MainWindowManager* w = new MainWindowManager(nullptr);
     w->setApiClient(m_apiClient);
-    w->setStyle("style/stylesMainWindowWorkerLight.qss");
+    w->setStyle(Config::instance().getStylePath());
     this->hide();
     w->show();
     connect(w, &MainWindowManager::ButtonLogOut,   this,&UserAuthWindow::ShowWindow);
@@ -139,7 +142,7 @@ void UserAuthWindow::slotCreateManagerWindow(const User& user){
 void UserAuthWindow::slotCreateWorkerWindow(const User& user){
     MainWindowWorker* w = new MainWindowWorker(nullptr);
     w->setApiClient(m_apiClient);
-    w->setStyle("style/stylesMainWindowWorkerLight.qss");
+    w->setStyle(Config::instance().getStylePath());
     w->setUser(user);
     this->hide();
     w->show();
