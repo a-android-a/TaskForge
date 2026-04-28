@@ -48,6 +48,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         TaskEditWindow.cpp
         TaskDeletedWindow.h
         TaskDeletedWindow.cpp
+        SettingsWindow.h
+        SettingsWindow.cpp
 
 
     )
