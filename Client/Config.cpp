@@ -50,6 +50,8 @@ bool Config::parseJson(const QJsonObject& obj) {
     QJsonObject appearance = obj.value("appearance").toObject();
     m_theme    = appearance.value("theme").toString(m_theme);
     m_language = appearance.value("language").toString(m_language);
+    m_stylePath = appearance.value("stylePath").toString(m_stylePath);
+
 
     // user
     QJsonObject user = obj.value("user").toObject();
@@ -72,6 +74,7 @@ bool Config::save() const {
     QJsonObject appearance;
     appearance["theme"]     = m_theme;
     appearance["language"]  = m_language;
+    appearance["stylePath"] = m_stylePath;
     root      ["appearance"]= appearance;
 
     QJsonObject user;
@@ -140,6 +143,14 @@ void Config::setDefaultUserName(const QString& name) {
 void Config::setCertificate(const QString& cert) {
     if (m_pCertificate != cert) {
         m_pCertificate = cert;
+        save();
+        emit configChanged();
+    }
+}
+
+void Config::setStylePath(const QString& path) {
+    if (m_stylePath != path) {
+        m_stylePath = path;
         save();
         emit configChanged();
     }
