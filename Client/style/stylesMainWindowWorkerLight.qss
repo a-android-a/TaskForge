@@ -628,4 +628,220 @@ TaskInfoWindow QPushButton#closeButton {
 TaskInfoWindow QPushButton#closeButton:hover {
     background: #ff6b5a;
 }
+/* === TaskEditWindow — общий фон === */
+#TaskEditWindow {
+    background: #f5f7fa;
+}
+
+/* === Заголовки секций === */
+#TaskEditWindow QLabel {
+    font-size: 15px;
+    color: #2c3e50;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+/* === Поля ввода === */
+#TaskEditWindow QLineEdit,
+#TaskEditWindow QTextEdit {
+    background: #ffffff;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 6px;
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+#TaskEditWindow QLineEdit:focus,
+#TaskEditWindow QTextEdit:focus {
+    border: 1px solid #4a90e2;
+}
+
+/* === Прогресс бар === */
+#TaskEditWindow QProgressBar {
+    background: #e6e9ef;
+    border-radius: 6px;
+    height: 12px;
+}
+
+#TaskEditWindow QProgressBar::chunk {
+    background-color: #4a90e2;
+    border-radius: 6px;
+}
+
+/* === ScrollArea === */
+#TaskEditWindow QScrollArea {
+    background: transparent;
+    border: none;
+}
+
+#TaskEditWindow QScrollArea QWidget {
+    background: transparent;
+}
+
+/* === Список задач === */
+#TaskEditWindow QLabel.taskItem {
+    font-size: 15px;
+    padding: 6px 4px;
+    color: #34495e;
+}
+
+/* === Кнопки === */
+#TaskEditWindow QPushButton {
+    background: #4a90e2;
+    color: blue;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 14px;
+}
+
+#TaskEditWindow QPushButton:hover {
+    background: #357ABD;
+}
+
+#TaskEditWindow QPushButton#closeButton {
+    background: #bdc3c7;
+    color: #2c3e50;
+}
+
+#TaskEditWindow QPushButton#closeButton:hover {
+    background: #a6b0b7;
+}
+/* === Основное окно === */
+#TaskDeletedWindow {
+    background: #f5f7fa;
+    font-family: "Segoe UI", "Roboto", sans-serif;
+    font-size: 15px;
+    color: #2c3e50;
+}
+
+/* === Заголовок === */
+#TaskDeletedWindow QLabel {
+    font-size: 18px;
+    font-weight: 600;
+    padding: 8px 4px;
+    color: #1f2d3d;
+}
+
+/* === ScrollArea === */
+#TaskDeletedWindow QScrollArea {
+    background: transparent;
+    border: none;
+}
+
+#TaskDeletedWindow QScrollArea QWidget {
+    background: transparent;
+}
+
+/* === Кнопки задач === */
+#TaskItem {
+    background: #ffffff;
+    border: 1px solid #dce3ec;
+    border-radius: 10px;
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 16px;
+    color: #2c3e50;
+    transition: 0.2s;
+}
+
+#TaskItem:hover {
+    background: #eef3ff;
+    border-color: #b5c8ff;
+}
+
+/* === Выбранная задача === */
+#TaskItem[selected="true"] {
+    background: #ffecec;
+    border: 2px solid #ff6b6b;
+}
+
+/* === Кнопка удаления === */
+#DeleteButton {
+    background: #ff4d4d;
+    color: white;
+    font-size: 17px;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    margin-top: 10px;
+}
+
+#DeleteButton:hover {
+    background: #ff2e2e;
+}
+
+/* === Settings Window — общий фон === */
+#SettingsWindow {
+    background: #f7f9fc;
+    border-radius: 12px;
+    padding: 20px;
+    font-family: "Segoe UI", "Roboto", sans-serif;
+    color: #2d3436;
+}
+
+/* Заголовок окна */
+#SettingsTitle {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2d3436;
+    margin-bottom: 16px;
+}
+
+/* Подзаголовки секций */
+
+
+/* Поля ввода */
+#SettingsWindow QLineEdit,
+#SettingsWindow QComboBox {
+    background: #ffffff;
+    border: 1px solid #dfe6e9;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #2d3436;
+}
+
+#SettingsWindow QLineEdit:focus,
+#SettingsWindow QComboBox:focus {
+    border: 1px solid #3498db;
+}
+
+/* Кнопка сохранения */
+#SettingsSaveButton {
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 16px;
+}
+
+#SettingsSaveButton:hover {
+    background: #2980b9;
+}
+
+#SettingsSaveButton:pressed {
+    background: #1f6391;
+}
+
+/* Кнопка отмены */
+
+
+#SettingsCancelButton:hover {
+    background: #a6b0b7;
+}
+
+#SettingsCancelButton:pressed {
+    background: #8e9aa1;
+}
+
+/* Разделитель */
+#SettingsSeparator {
+    background: #dcdde1;
+    height: 1px;
+    margin: 12px 0;
+}
 
