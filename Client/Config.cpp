@@ -10,9 +10,9 @@ Config& Config::instance() {
     static Config config;
     return config;
 }
-
+//QCoreApplication::applicationDirPath() +
 Config::Config() {
-    m_filePath = QCoreApplication::applicationDirPath() + "config.json";
+    m_filePath =  QCoreApplication::applicationDirPath() + "/config.json";
 }
 
 bool Config::load() {
@@ -44,6 +44,7 @@ bool Config::parseJson(const QJsonObject& obj) {
     QJsonObject server = obj.value("server").toObject();
     m_serverHost = server.value("host").toString(m_serverHost);
     m_serverPort = server.value("port").toInt(m_serverPort);
+    m_pCertificate = server.value("certificate").toString(m_pCertificate);
 
     // appearance
     QJsonObject appearance = obj.value("appearance").toObject();
@@ -101,5 +102,46 @@ void Config::setServerHost(const QString& host) {
 }
 void Config::setSettingsFile(const QString &path){
     m_filePath = path;
+}
+
+
+void Config::setServerPort(quint16 port) {
+    if (m_serverPort != port) {
+        m_serverPort = port;
+        save();
+        emit configChanged();
+    }
+}
+
+void Config::setTheme(const QString& theme) {
+    if (m_theme != theme) {
+        m_theme = theme;
+        save();
+        emit configChanged();
+    }
+}
+
+void Config::setLanguage(const QString& lang) {
+    if (m_language != lang) {
+        m_language = lang;
+        save();
+        emit configChanged();
+    }
+}
+
+void Config::setDefaultUserName(const QString& name) {
+    if (m_defaultUserName != name) {
+        m_defaultUserName = name;
+        save();
+        emit configChanged();
+    }
+}
+
+void Config::setCertificate(const QString& cert) {
+    if (m_pCertificate != cert) {
+        m_pCertificate = cert;
+        save();
+        emit configChanged();
+    }
 }
 

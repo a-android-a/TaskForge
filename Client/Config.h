@@ -38,7 +38,9 @@ public:
     void setServerPort(quint16 port);
     void setTheme(const QString& theme);
     void setSettingsFile(const QString& path);
-
+    void setLanguage(const QString& lang);
+    void setDefaultUserName(const QString& name);
+    void setCertificate(const QString& cert);
 
 signals:
     void configChanged();
