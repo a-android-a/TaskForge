@@ -45,8 +45,8 @@ void ApiClient::connectToServer()
     if (this->state() != QAbstractSocket::UnconnectedState) {
         this->abort();
     }
-    Config::instance().setSettingsFile("config.json");
-
+    //Config::instance().setSettingsFile("/config.json");
+    Config::instance().load();
     qInfo()<< Config::instance().getServerHost();
     qInfo()<< Config::instance().getServerPort();
     qInfo()<< Config::instance().getCertificate();
@@ -79,7 +79,7 @@ void ApiClient::connectToServer()
     });
 
 
-    this->connectToHostEncrypted(Config::instance().getServerHost(), 4433);
+    this->connectToHostEncrypted(Config::instance().getServerHost(), Config::instance().getServerPort());
     emit ConnectionOk();
 
 }
