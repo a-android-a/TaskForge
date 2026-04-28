@@ -3,6 +3,7 @@
 #include "MainWindowWorker.h"
 #include "MainWindowManager.h"
 #include "MainWindowAdmin.h"
+#include "SettingsWindow.h"
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QLineEdit>
@@ -25,6 +26,22 @@ UserAuthWindow::UserAuthWindow(ApiClient* apiClient, QWidget *parent)
     m_pReconnect= new QPushButton(tr("Reconnect"));
     vBox        = new QVBoxLayout();
 
+    QPushButton* settingsBtn = new QPushButton("⚙️", this);
+    settingsBtn->setObjectName("settingsButton");
+    settingsBtn->setFixedSize(28, 28);
+    settingsBtn->setStyleSheet(
+        "#settingsButton { border: none; font-size: 18px; }"
+        "#settingsButton:hover { color: #4a90e2; }"
+        );
+
+    QHBoxLayout* topBar = new QHBoxLayout();
+    topBar->addStretch();
+    topBar->addWidget(settingsBtn);
+
+    vBox->addLayout(topBar);
+
+
+
 
     vBox->addWidget(new QLabel(tr("Login")));
     vBox->addWidget(m_pLogin);
@@ -42,6 +59,12 @@ UserAuthWindow::UserAuthWindow(ApiClient* apiClient, QWidget *parent)
     connect(m_apiClient, &ApiClient::createAdminWindow,     this,&UserAuthWindow::slotCreateAdminWindow  );
     connect(m_apiClient, &ApiClient::createManagerWindow,   this,&UserAuthWindow::slotCreateManagerWindow);
     connect(m_pReconnect,&QPushButton::clicked,             this,&UserAuthWindow::slotButtonReconnect    );
+    connect(settingsBtn, &QPushButton::clicked, this, [](){
+        SettingsWindow* w = new SettingsWindow();
+        w->setStyle("style/stylesMainWindowWorkerLight.qss");
+        w->show();
+    });
+
     m_apiClient->connectToServer();
     m_pLogin->setObjectName("authLogin");
     m_pPassword->setObjectName("authPassword");
