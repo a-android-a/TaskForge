@@ -1,0 +1,15 @@
+{
+    "appearance": {
+        "language": "ru",
+        "stylePath": "style/darkStyle.qss",
+        "theme": "light"
+    },
+    "server": {
+        "certificate": "server.crt",
+        "host": "127.0.0.1",
+        "port": 4433
+    },
+    "user": {
+        "defaultName": "333"
+    }
+}
