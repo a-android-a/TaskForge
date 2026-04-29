@@ -74,6 +74,7 @@ UserAuthWindow::UserAuthWindow(ApiClient* apiClient, QWidget *parent)
     this->setObjectName("authWindow");
     m_pPassword->setEchoMode(QLineEdit::Password);
 
+    Config::instance().load();
 
 
 }
@@ -125,7 +126,7 @@ void UserAuthWindow::slotCreateAdminWindow(const User& user){
     w->setApiClient(m_apiClient);
     // w->setStyle("style/stylesMainWindowWorkerLight.qss");
     //w->setUser(user);
-     //QString path = Config::instance().getStylePath();
+    //QString path = Config::instance().getStylePath();
     w->setStyle(Config::instance().getStylePath());
     this->hide();
     w->show();
