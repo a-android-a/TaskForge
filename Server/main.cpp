@@ -1,10 +1,12 @@
 #include <QApplication>
 #include "SslServer.h"
+#include "../Client/Config.h"
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     SslServer server;
-    const int port = 4433;
+    Config::instance().load();
+    const int port = Config::instance().getServerPort();
 
     if (!server.listen(QHostAddress::Any, port)) {
         qInfo() << "Error Start Server " << server.errorString();
