@@ -39,14 +39,14 @@ TaskCard::TaskCard(const Task &task, QWidget *parent)
     prio->setObjectName("taskCardPriority");
     prio->setProperty("priority", task.priority);
 
-    QLabel *due = new QLabel("before: " + task.due_date, m_pMainWidgetCard);
+    QLabel *due = new QLabel(tr("before: ") + task.due_date, m_pMainWidgetCard);
     due->setObjectName("taskCardDue");
 
     // QLabel *desc = new QLabel(task.description, m_pMainWidgetCard);
     // desc->setObjectName("taskCardDescription");
     // desc->setWordWrap(true);
 
-    QPushButton *btnDetails = new QPushButton("More detailed", m_pMainWidgetCard);
+    QPushButton *btnDetails = new QPushButton(tr("More detailed"), m_pMainWidgetCard);
     btnDetails->setObjectName("taskCardButton");
 
     connect(btnDetails, &QPushButton::clicked, this, [this]() {
