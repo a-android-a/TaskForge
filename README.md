@@ -138,10 +138,8 @@ cp -r DB build
 
 #### **Скриншоты**![Главное окно](/home/test/Задачи/диплом/src/TaskForge/img/WindowWorker.png)
 
-![Главное окно](/home/test/Задачи/диплом/src/TaskForge/img/ath.png)
+![Главное окно](/img/ath.png)
 
-![Настройки](/home/test/Задачи/диплом/src/TaskForge/img/settings.png)
+![Настройки](/img/settings.png)
 
-![](/home/test/.var/app/com.github.marktext.marktext/config/marktext/images/2026-07-04-13-16-05-image.png)
-
-![информация о задаче](/home/test/Задачи/диплом/src/TaskForge/img/info.png)
+![информация о задаче](/img/info.png)
