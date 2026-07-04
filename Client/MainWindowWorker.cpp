@@ -63,9 +63,9 @@ MainWindowWorker::MainWindowWorker(QWidget *parent) : QWidget(parent)
     kanbanLayout->setSpacing(10);
     kanbanLayout->setContentsMargins(10, 10, 10, 10);
 
-    todoColumn   = new TaskColumn(tr("Not started"), this);
-    inProgress   = new TaskColumn(tr("At work"), this);
-    doneColumn   = new TaskColumn(tr("Completed"), this);
+    todoColumn   = new TaskColumn(tr("Not started"), 0,this);
+    inProgress   = new TaskColumn(tr("At work"), 1,this);
+    doneColumn   = new TaskColumn(tr("Completed"), 2,this);
 
     kanbanLayout->addWidget(todoColumn);
     kanbanLayout->addWidget(inProgress);
