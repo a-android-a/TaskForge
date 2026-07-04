@@ -12,7 +12,7 @@ class TaskColumn : public QWidget
     Q_OBJECT
 
 public:
-    explicit TaskColumn(const QString &title, QWidget *parent = nullptr);
+    explicit TaskColumn(const QString &title, const qint64 id, QWidget *parent = nullptr);
 
     void addTaskCard(TaskCard *card);
     void removeTaskCard(TaskCard *card);
