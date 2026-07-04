@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QCoreApplication>
+#include <QMessageBox>
 
 SettingsWindow::SettingsWindow(QWidget *parent)
     : QWidget(parent)
@@ -60,14 +61,36 @@ SettingsWindow::SettingsWindow(QWidget *parent)
     connect(chooseStyleBtn, &QPushButton::clicked, this, [this]() {
         QString file = QFileDialog::getOpenFileName(
             this,
-            "Выберите файл стилей",
+            tr("Выберите файл стилей"),
             QCoreApplication::applicationDirPath(),
-            "QSS Files (*.qss)"
+            tr("QSS Files (*)")
             );
 
-        if (!file.isEmpty()) {
-            styleEdit->setText(file);
+        if (file.isEmpty())
+            return;
+
+        // Проверяем существование файла
+        if (!QFile::exists(file)) {
+            QMessageBox::warning(this, tr("Ошибка"), tr("Файл не существует."));
+            return;
         }
+
+        // Проверяем возможность чтения
+        QFile f(file);
+        if (!f.open(QFile::ReadOnly)) {
+            QMessageBox::warning(this, tr("Ошибка"), tr("Не удалось открыть файл стилей."));
+            return;
+        }
+        f.close();
+
+        // Проверяем расширение
+        if (!file.endsWith(".qss", Qt::CaseInsensitive)) {
+            QMessageBox::warning(this, tr("Ошибка"), tr("Выберите файл с расширением .qss"));
+            return;
+        }
+
+        // Если всё ок — записываем путь
+        styleEdit->setText(file);
     });
 
 
@@ -108,9 +131,10 @@ void SettingsWindow::onSaveClicked()
     cfg.setTheme(themeBox->currentText());
     cfg.setLanguage(langBox->currentText());
     cfg.setDefaultUserName(userEdit->text());
+    cfg.setStylePath(styleEdit->text());
 
     cfg.save();
-
+    QMessageBox::information(this, tr("Information"),tr("For the settings to take effect, you need to restart the application."));
     qInfo() << "Settings saved!";
 }
 
