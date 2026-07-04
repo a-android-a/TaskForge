@@ -5,7 +5,7 @@
 #include <QScrollArea>
 #include <QLayoutItem>
 #include <QStyle>
-TaskColumn::TaskColumn(const QString &title, QWidget *parent)
+TaskColumn::TaskColumn(const QString &title, const qint64 id,QWidget *parent)
     : QWidget(parent)
 {
     setAcceptDrops(true);
@@ -13,9 +13,9 @@ TaskColumn::TaskColumn(const QString &title, QWidget *parent)
 
     setObjectName("taskColumn");
 
-    if (title == "Not started")      m_status = 0;
-    else if (title == "At work")     m_status = 1;
-    else if (title == "Completed")   m_status = 2;
+    if (id == 0)      m_status = 0;
+    else if (id == 1)     m_status = 1;
+    else if (id == 2)   m_status = 2;
     else                             m_status = -1;
 
     // ВНЕШНИЙ ЛЕЙАУТ
